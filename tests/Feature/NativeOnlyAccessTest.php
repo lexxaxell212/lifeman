@@ -5,12 +5,12 @@ use Illuminate\Http\Response;
 beforeEach(function () {
     config([
         'app.web_access_allowed' => false,
-        'app.web_redirect_url' => 'https://lxx.my.id',
+        'app.web_redirect_url' => 'https://dzfee.id',
     ]);
 });
 
 test('regular browsers are redirected to the landing page', function () {
-    $this->get('/')->assertRedirect('https://lxx.my.id');
+    $this->get('/')->assertRedirect('https://dzfee.id');
 });
 
 test('native app user agents can access the application', function () {

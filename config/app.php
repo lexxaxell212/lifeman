@@ -137,7 +137,7 @@ return [
 
     'web_access_allowed' => env('WEB_ACCESS_ALLOWED', false),
 
-    'web_redirect_url' => env('WEB_REDIRECT_URL', 'https://lxx.my.id'),
+    'web_redirect_url' => env('WEB_REDIRECT_URL', 'https://dzfee.id'),
 
     'native_ua_token' => env('NATIVE_UA_TOKEN', 'LIFEMAN_APP'),
 

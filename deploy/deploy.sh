@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Release deploy for lifeman (run on VPS, inside /var/www/lifeman)
+# Release deploy for lifeman (run on VPS, inside /home/lexx/lifeman)
 # Usage: bash deploy/deploy.sh
 # Keeps the repo in sync with origin and rebuilds production assets.
 
-APP_DIR=/var/www/lifeman
+APP_DIR=/home/lexx/lifeman
 BRANCH="${1:-master}"
 
 if [ ! -d "$APP_DIR/.git" ]; then

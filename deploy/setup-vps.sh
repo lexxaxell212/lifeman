@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# One-time VPS setup for lifeman.lxx.my.id
+# One-time VPS setup for lifeman.dzfee.id
 # Run as root: bash setup-vps.sh
-# Prerequisite: DNS A record lifeman.lxx.my.id -> VPS IP (wait for propagation)
+# Prerequisite: DNS A record lifeman.dzfee.id -> VPS IP (wait for propagation)
 
-DOMAIN=lifeman.lxx.my.id
-APP_DIR=/var/www/lifeman
+DOMAIN=lifeman.dzfee.id
+APP_DIR=/home/lexx/lifeman
 GIT_REMOTE="${GIT_REMOTE:-}" # e.g. https://github.com/<user>/<repo>.git (or set later)
 
 apt-get update
@@ -53,8 +53,8 @@ certbot --nginx -d "$DOMAIN" --agree-tos --redirect --non-interactive \
 
 echo
 echo "=== Setup selesai ==="
-echo "1. Isi /var/www/lifeman/.env dari .env.production.example, lalu:
-     cd /var/www/lifeman && composer install --no-dev --optimize-autoloader
+echo "1. Isi /home/lexx/lifeman/.env dari .env.production.example, lalu:
+     cd /home/lexx/lifeman && composer install --no-dev --optimize-autoloader
      php artisan key:generate && php artisan migrate --force
      php artisan config:cache && php artisan route:cache"
 echo "2. Buat user admin: php artisan register"
