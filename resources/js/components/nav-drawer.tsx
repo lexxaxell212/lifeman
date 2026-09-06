@@ -129,7 +129,7 @@ export function NavDrawer({ open, onOpenChange }: Props) {
                 <SheetHeader className="border-b px-6 py-5 text-left">
                     <div className="flex items-center gap-3">
                         <Avatar className="size-11">
-                            <AvatarFallback className="bg-linear-to-br from-brand-400 to-brand-600 text-sm font-bold text-white">
+                            <AvatarFallback className="bg-primary/15 text-primary text-sm font-bold">
                                 {user ? getInitials(user.name) : 'LM'}
                             </AvatarFallback>
                         </Avatar>
@@ -167,7 +167,7 @@ export function NavDrawer({ open, onOpenChange }: Props) {
                                             className={cn(
                                                 'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200',
                                                 active
-                                                    ? 'bg-linear-to-r from-brand-500 to-brand-600 text-white shadow-md shadow-brand-500/30'
+                                                    ? 'bg-primary/15 text-primary'
                                                     : 'text-foreground/80 hover:bg-muted hover:text-foreground',
                                             )}
                                         >

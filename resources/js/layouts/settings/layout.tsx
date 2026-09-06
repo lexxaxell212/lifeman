@@ -62,7 +62,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
             </div>
 
             <nav
-                className="mb-4 flex gap-1.5 overflow-x-auto rounded-2xl border border-border/70 bg-card p-1.5 shadow-sm"
+                className="mb-4 flex gap-1.5 overflow-x-auto rounded-2xl border border-border/70 bg-card p-1.5"
                 aria-label={t('settingsTitle')}
             >
                 {sidebarNavItems.map((item) => {
@@ -77,7 +77,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                             className={cn(
                                 'relative flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-200',
                                 active
-                                    ? 'bg-linear-to-r from-brand-500 to-brand-600 text-white shadow-md shadow-brand-500/30'
+                                    ? 'bg-primary/15 text-primary'
                                     : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                             )}
                         >

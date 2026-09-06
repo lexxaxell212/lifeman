@@ -42,7 +42,7 @@ function ReminderBannerItem({
     const { t } = useI18n();
 
     return (
-        <Card className="animate-in rounded-2xl border-border/70 shadow-lg shadow-black/5 fade-in slide-in-from-bottom-2">
+        <Card className="animate-in rounded-2xl border-border/70 fade-in slide-in-from-bottom-2">
             <CardContent className="flex items-center gap-3 p-4">
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Icon className="size-5" />

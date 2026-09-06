@@ -48,7 +48,7 @@ export function Pagination({ links }: { links: PaginationLink[] }) {
                         className={cn(
                             'flex size-9 items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted hover:text-foreground',
                             link.active &&
-                                'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground',
+                                'bg-primary/15 text-primary hover:bg-primary/15 hover:text-primary',
                         )}
                     >
                         {decodeLabel(link.label)}

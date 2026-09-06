@@ -434,7 +434,7 @@ function FormulaOption({
             )}
         >
             {selected && (
-                <span className="absolute top-2 right-2 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <span className="absolute top-2 right-2 flex size-5 items-center justify-center rounded-full bg-primary/15 text-primary">
                     <Check className="size-3.5" />
                 </span>
             )}

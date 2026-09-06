@@ -1,6 +1,6 @@
 # lifeman
 
-Personal finance management app built on **Laravel 13 + Inertia (React) + Capacitor**. Accessible as a web app (`lifeman.lxx.my.id`) and an Android app.
+Personal finance management app built on **Laravel 13 + Inertia (React) + Capacitor**. Accessible as a web app (`lifeman.dzfee.id`) and an Android app.
 
 ## What's Inside
 
@@ -9,7 +9,7 @@ Personal finance management app built on **Laravel 13 + Inertia (React) + Capaci
 | `app/` | App logic (models, controllers, Filament admin, jobs, etc.) |
 | `resources/js/` | React frontend (Inertia) — components, pages, hooks (including the Capacitor back-handler) |
 | `public/` | Web root — `index.php`, build assets, storage symlink |
-| `server/` | Copy of the nginx site config for `lifeman.lxx.my.id` |
+| `server/` | Copy of the nginx site config for `lifeman.dzfee.id` |
 | `database/` | Migrations & seeders |
 | `scripts/`, `deploy/` | Extra utilities & deployment |
 
@@ -46,5 +46,5 @@ npx cap open android
 
 ### Deploy
 
-- Nginx root: `~/lifeman/public` (see `server/lifeman.lxx.my.id`)
+- Nginx root: `~/lifeman/public` (see `server/lifeman.dzfee.id`)
 - After any change: `php artisan optimize:clear && php artisan optimize`

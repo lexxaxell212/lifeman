@@ -60,7 +60,7 @@ export default function Dashboard({ auth, stats }: Props) {
                     <p className="text-sm text-muted-foreground">{today}</p>
                 </div>
 
-                <div className="rounded-2xl bg-primary p-4 text-primary-foreground">
+                <div className="rounded-2xl bg-primary/10 p-4 text-primary">
                     <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm font-medium opacity-80">
@@ -74,7 +74,6 @@ export default function Dashboard({ auth, stats }: Props) {
                             <Button
                                 asChild
                                 variant="secondary"
-                                className="shadow-sm"
                             >
                                 <Link href={toUrl(remindersIndex())}>
                                     <AlarmClock className="size-4" />
@@ -84,7 +83,6 @@ export default function Dashboard({ auth, stats }: Props) {
                             <Button
                                 asChild
                                 variant="secondary"
-                                className="shadow-sm"
                             >
                                 <Link href={toUrl(savingsIndex())}>
                                     <PiggyBank className="size-4" />

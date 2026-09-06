@@ -101,7 +101,7 @@ export function AppSplash({ appVersion }: { appVersion?: string }) {
             )}
         >
             <div className="animate-pulse">
-                <AppLogoIcon className="size-24 drop-shadow-lg" />
+                <AppLogoIcon className="size-24" />
             </div>
             <div className="flex flex-col items-center gap-1 text-center">
                 <p className="text-2xl font-bold tracking-tight text-brand-400">

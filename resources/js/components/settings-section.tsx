@@ -19,7 +19,7 @@ export default function SettingsSection({
     tone = 'accent',
 }: SettingsSectionProps) {
     return (
-        <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm">
+        <section className="overflow-hidden rounded-2xl border border-border/70 bg-card">
             <header className="flex items-center gap-3 border-b px-4 py-3">
                 <span
                     className={cn(

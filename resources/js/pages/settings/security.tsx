@@ -152,7 +152,7 @@ export default function Security(props: Props) {
                                     <div className="flex items-center gap-3 pt-1">
                                         <Button
                                             disabled={processing}
-                                            className="rounded-xl bg-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                                            className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                                             data-test="update-password-button"
                                         >
                                             {t('securitySavePassword')}

@@ -219,3 +219,8 @@
         0 0 10px #22c55e,
         0 0 5px #22c55e;
 }
+
+/* No-shadows design: neutralize sonner toast shadows */
+[data-sonner-toast] {
+    box-shadow: none !important;
+}

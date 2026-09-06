@@ -182,7 +182,7 @@ function ReminderCard({
     return (
         <Card
             className={cn(
-                'transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md',
+                'transition-all duration-200 hover:-translate-y-0.5',
                 isExpired &&
                     'border-destructive/40 bg-destructive/5 hover:border-destructive/60',
                 isDone && 'opacity-70 hover:opacity-90',
@@ -196,9 +196,9 @@ function ReminderCard({
                     className={cn(
                         'size-9 shrink-0 rounded-full',
                         isDone &&
-                            'border-primary bg-primary text-primary-foreground hover:bg-primary',
+                            'border-primary/60 bg-primary/15 text-primary hover:bg-primary/25',
                         !isDone &&
-                            'hover:border-primary hover:bg-primary hover:text-primary-foreground',
+                            'hover:border-primary/60 hover:bg-primary/25 hover:text-primary',
                     )}
                     onClick={markDone}
                     title={

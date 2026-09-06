@@ -108,7 +108,7 @@ export default function Profile({
 
                                     <Button
                                         disabled={processing}
-                                        className="rounded-xl bg-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                                        className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                                         data-test="update-profile-button"
                                     >
                                         {t('save')}
@@ -290,7 +290,7 @@ export default function Profile({
 
                                     <Button
                                         disabled={processing}
-                                        className="rounded-xl bg-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                                        className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                                         data-test="update-password-button"
                                     >
                                         {t('profileSavePassword')}

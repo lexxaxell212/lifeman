@@ -16,7 +16,7 @@ export default function AuthSimpleLayout({
                         href={home()}
                         className="flex flex-col items-center gap-2 font-medium"
                     >
-                        <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-2xl bg-background shadow-lg ring-1 ring-border/50">
+                        <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-2xl border bg-background ring-1 ring-border/50">
                             <AppLogoIcon className="size-8 fill-current text-[var(--foreground)] dark:text-white" />
                         </div>
                         <span className="sr-only">{title}</span>
@@ -32,7 +32,7 @@ export default function AuthSimpleLayout({
                     </div>
                 </div>
 
-                <div className="rounded-3xl border bg-card/80 p-6 shadow-2xl ring-1 shadow-black/5 ring-border/50 backdrop-blur-xl sm:p-8">
+                <div className="rounded-3xl border bg-card/80 p-6 ring-1 ring-border/50 backdrop-blur-xl sm:p-8">
                     {children}
                 </div>
             </div>

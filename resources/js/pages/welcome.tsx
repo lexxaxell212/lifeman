@@ -43,7 +43,7 @@ export default function Welcome() {
             <div className="flex min-h-dvh flex-col p-6 lg:justify-center lg:p-8">
                 <header className="mx-auto mb-10 flex w-full max-w-3xl items-center justify-between">
                     <span className="flex items-center gap-2 font-semibold tracking-tight">
-                        <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+                        <span className="flex size-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
                             <Sparkles className="size-4" />
                         </span>
                         Life Man
@@ -90,7 +90,7 @@ export default function Welcome() {
                                 <Button
                                     asChild
                                     size="lg"
-                                    className="rounded-xl shadow-lg shadow-primary/25 transition-all duration-200 hover:-translate-y-0.5"
+                                    className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                                 >
                                     <Link href={register()}>
                                         {t('welcomeCTA')}
@@ -113,7 +113,7 @@ export default function Welcome() {
                             <Button
                                 asChild
                                 size="lg"
-                                className="mt-2 rounded-xl shadow-lg shadow-primary/25"
+                                className="mt-2 rounded-xl"
                             >
                                 <Link href={dashboard()}>
                                     {t('welcomeOpenDashboard')}
@@ -131,9 +131,9 @@ export default function Welcome() {
                                 prefetch
                                 className="group block h-full"
                             >
-                                <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-lg">
+                                <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50">
                                     <CardHeader className="pb-2">
-                                        <div className="mb-2 flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform duration-200 group-hover:scale-110">
+                                        <div className="mb-2 flex size-10 items-center justify-center rounded-xl bg-primary/15 text-primary transition-transform duration-200 group-hover:scale-110">
                                             <feature.icon className="size-5" />
                                         </div>
                                         <CardTitle className="flex items-center gap-2 text-base">

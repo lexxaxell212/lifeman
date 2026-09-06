@@ -135,7 +135,7 @@ function GoalCard({ goal }: { goal: SavingsGoal }) {
             prefetch
             className="group"
         >
-            <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-lg">
+            <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50">
                 <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                         <CardTitle className="flex items-center gap-2 text-base">

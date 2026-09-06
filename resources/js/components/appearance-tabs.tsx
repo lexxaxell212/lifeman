@@ -28,15 +28,10 @@ function MockCard({ dark = false }: { dark?: boolean }) {
             <div
                 className={cn(
                     'flex items-center gap-1.5 rounded-md p-2',
-                    dark ? 'bg-neutral-800' : 'bg-white shadow-sm',
+                    dark ? 'bg-neutral-800' : 'bg-white',
                 )}
             >
-                <div
-                    className={cn(
-                        'size-2 shrink-0 rounded-full',
-                        dark ? 'bg-primary' : 'bg-primary',
-                    )}
-                />
+                <div className="size-2 shrink-0 rounded-full bg-primary" />
                 <div
                     className={cn(
                         'h-1 w-1/2 rounded-full',
@@ -83,12 +78,12 @@ export default function AppearanceTabs() {
                         className={cn(
                             'group relative rounded-2xl border-2 p-1.5 text-left transition-all duration-200',
                             active
-                                ? 'border-primary shadow-md'
-                                : 'border-border hover:border-primary/40 hover:shadow-sm',
+                                ? 'border-primary'
+                                : 'border-border hover:border-primary/40',
                         )}
                     >
                         {active && (
-                            <span className="absolute -top-2 -right-2 z-10 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                            <span className="absolute -top-2 -right-2 z-10 flex size-5 items-center justify-center rounded-full bg-primary/15 text-primary">
                                 <Check className="size-3" />
                             </span>
                         )}

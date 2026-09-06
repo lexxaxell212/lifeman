@@ -58,7 +58,7 @@ export default function PersonalIndex() {
                             cacheFor="60s"
                             className="group"
                         >
-                            <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-lg">
+                            <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50">
                                 <CardHeader className="gap-3">
                                     <div
                                         className={cn(

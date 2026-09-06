@@ -33,7 +33,7 @@ export function LanguageSelector() {
                         className={cn(
                             'h-7 rounded-full px-4 text-xs font-semibold transition-colors duration-200',
                             lang === option.value
-                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                ? 'bg-primary/15 text-primary'
                                 : 'text-muted-foreground hover:text-foreground',
                         )}
                     >

@@ -113,7 +113,7 @@ export default function Notifications() {
                                     className={cn(
                                         'cursor-pointer rounded-xl transition-all duration-200',
                                         isSelected &&
-                                            'border-primary shadow-md',
+                                            'border-primary',
                                     )}
                                     onClick={() => choose(sound.id)}
                                 >
@@ -122,7 +122,7 @@ export default function Notifications() {
                                             className={cn(
                                                 'flex size-9 shrink-0 items-center justify-center rounded-lg',
                                                 isSelected
-                                                    ? 'bg-primary text-primary-foreground shadow-sm'
+                                                    ? 'bg-primary/15 text-primary'
                                                     : 'bg-muted text-muted-foreground',
                                             )}
                                         >
@@ -180,7 +180,7 @@ export default function Notifications() {
                                             className={cn(
                                                 'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200',
                                                 isSelected
-                                                    ? 'border-primary bg-primary text-primary-foreground'
+                                                    ? 'border-primary bg-primary/15 text-primary'
                                                     : 'border-muted-foreground/40',
                                             )}
                                         >
