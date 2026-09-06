@@ -45,6 +45,8 @@ class ReminderController extends Controller
             $query->orderByRaw('done_at IS NULL DESC')->latest('remind_at');
         }
 
+        $user = auth()->user();
+
         return Inertia::render('reminders/index', [
             'reminders' => $query->paginate(20)->withQueryString(),
             'filters' => [
@@ -52,6 +54,16 @@ class ReminderController extends Controller
                 'status' => $status,
                 'sort' => $sort,
                 'dir' => $dir,
+            ],
+            'stats' => [
+                'pending' => Reminder::query()->whereBelongsTo($user)->pending()->count(),
+                'overdue' => Reminder::query()->whereBelongsTo($user)->overdue()->count(),
+                'done' => Reminder::query()->whereBelongsTo($user)->whereNotNull('done_at')->count(),
+                'dueToday' => Reminder::query()
+                    ->whereBelongsTo($user)
+                    ->pending()
+                    ->whereDate('remind_at', now()->toDateString())
+                    ->count(),
             ],
         ]);
     }

@@ -30,6 +30,10 @@ class BusinessController extends Controller
 
         return Inertia::render('businesses/index', [
             'businesses' => $businesses,
+            'stats' => [
+                'total' => $businesses->count(),
+                'transactions' => (int) $businesses->sum('transactions_count'),
+            ],
         ]);
     }
 

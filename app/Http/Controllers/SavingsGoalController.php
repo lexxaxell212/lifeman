@@ -47,6 +47,14 @@ class SavingsGoalController extends Controller
             $query->latest();
         }
 
+        $user = auth()->user();
+
+        $savedAmount = (float) SavingsGoal::query()
+            ->whereBelongsTo($user)
+            ->withSum('payments as paid_amount', 'amount')
+            ->get()
+            ->sum('paid_amount');
+
         return Inertia::render('savings/index', [
             'goals' => $query->paginate(20)->withQueryString(),
             'filters' => [
@@ -54,6 +62,17 @@ class SavingsGoalController extends Controller
                 'status' => $status,
                 'sort' => $sort,
                 'dir' => $dir,
+            ],
+            'stats' => [
+                'active' => SavingsGoal::query()->whereBelongsTo($user)->active()->count(),
+                'achieved' => SavingsGoal::query()
+                    ->whereBelongsTo($user)
+                    ->whereRaw(
+                        '(select coalesce(sum(amount), 0) from savings_payments where savings_payments.savings_goal_id = savings_goals.id) >= target_amount',
+                    )
+                    ->count(),
+                'total' => SavingsGoal::query()->whereBelongsTo($user)->count(),
+                'saved' => $savedAmount,
             ],
         ]);
     }

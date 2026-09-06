@@ -9,6 +9,7 @@ const PAGE_TITLE_KEYS: Record<string, TranslationKey> = {
     'cashflows/index': 'pageCashflowIndex',
     'cashflows/show': 'pageCashflowShow',
     'reminders/index': 'pageReminders',
+    'notifications/index': 'pageNotifications',
     'savings/index': 'pageSavingsIndex',
     'savings/show': 'pageSavingsShow',
     'settings/profile': 'pageSettingsProfile',

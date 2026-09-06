@@ -33,11 +33,28 @@ class CashflowController extends Controller
             $query->latest();
         }
 
+        $user = auth()->user();
+
+        $totals = Cashflow::query()
+            ->whereBelongsTo($user)
+            ->withSum(['items as income_total' => fn ($q) => $q->income()], 'amount')
+            ->withSum(['items as expense_total' => fn ($q) => $q->expense()], 'amount')
+            ->get();
+
+        $income = (float) $totals->sum('income_total');
+        $expense = (float) $totals->sum('expense_total');
+
         return Inertia::render('cashflows/index', [
             'cashflows' => $query->paginate(20)->withQueryString(),
             'filters' => [
                 'search' => $search,
                 'sort' => $sort,
+            ],
+            'stats' => [
+                'total' => $totals->count(),
+                'income' => $income,
+                'expense' => $expense,
+                'netto' => $income - $expense,
             ],
         ]);
     }

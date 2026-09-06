@@ -62,7 +62,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
             </div>
 
             <nav
-                className="mb-4 flex gap-1.5 overflow-x-auto rounded-2xl border border-border/70 bg-card p-1.5"
+                className="mb-4 flex flex-wrap justify-center gap-1.5 rounded-2xl border border-border/70 bg-card p-1.5"
                 aria-label={t('settingsTitle')}
             >
                 {sidebarNavItems.map((item) => {

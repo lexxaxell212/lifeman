@@ -1,7 +1,18 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowRight, CalendarClock, PiggyBank, Plus } from 'lucide-react';
+import {
+    ArrowRight,
+    CalendarClock,
+    CheckCircle2,
+    PiggyBank,
+    Plus,
+    Target,
+    Wallet,
+} from 'lucide-react';
 import { useState } from 'react';
 import { FilterBar } from '@/components/filter-bar';
+import { FloatingActionButton } from '@/components/floating-action-button';
+import { PageBanner } from '@/components/page-banner';
+import { PagePanel } from '@/components/page-panel';
 import { Pagination } from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -30,6 +41,12 @@ type Props = {
         sort: string;
         dir: string;
     };
+    stats: {
+        active: number;
+        achieved: number;
+        total: number;
+        saved: number;
+    };
 };
 
 type GoalForm = {
@@ -40,7 +57,7 @@ type GoalForm = {
     notes: string;
 };
 
-export default function SavingsIndex({ goals, filters }: Props) {
+export default function SavingsIndex({ goals, filters, stats }: Props) {
     const [open, setOpen] = useState(false);
     const { t } = useI18n();
 
@@ -48,9 +65,38 @@ export default function SavingsIndex({ goals, filters }: Props) {
         <>
             <Head title={t('pageSavingsIndex')} />
 
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between gap-3">
-                    <div>
+            <div className="flex min-h-screen flex-col gap-4">
+                <PageBanner
+                    stats={[
+                        {
+                            key: 'active',
+                            label: t('bannerActive'),
+                            value: stats.active,
+                            icon: Target,
+                        },
+                        {
+                            key: 'achieved',
+                            label: t('bannerAchieved'),
+                            value: stats.achieved,
+                            icon: CheckCircle2,
+                        },
+                        {
+                            key: 'total',
+                            label: t('bannerTotal'),
+                            value: stats.total,
+                            icon: PiggyBank,
+                        },
+                        {
+                            key: 'saved',
+                            label: t('bannerSaved'),
+                            value: formatMoney(stats.saved),
+                            icon: Wallet,
+                        },
+                    ]}
+                />
+
+                <PagePanel>
+                    <div className="mb-3">
                         <h1 className="text-2xl font-bold tracking-tight">
                             {t('savingsLetSave')}
                         </h1>
@@ -58,53 +104,65 @@ export default function SavingsIndex({ goals, filters }: Props) {
                             {t('savingsSubtitle')}
                         </p>
                     </div>
-                    <Button onClick={() => setOpen(true)}>
-                        <Plus className="size-4" />
-                        {t('savingsNewTarget')}
-                    </Button>
-                </div>
 
-                <FilterBar
-                    url={toUrl(index())}
-                    search={filters.search}
-                    status={filters.status}
-                    sort={filters.sort}
-                    statusOptions={[
-                        { value: 'active', label: t('savingsStatusRunning') },
-                        {
-                            value: 'completed',
-                            label: t('savingsStatusAchieved'),
-                        },
-                    ]}
-                    sortOptions={[
-                        { value: 'created_at', label: t('savingsColCreated') },
-                        {
-                            value: 'target_amount',
-                            label: t('savingsColTarget'),
-                        },
-                        { value: 'end_date', label: t('savingsColDeadline') },
-                        { value: 'title', label: t('savingsColTitle') },
-                    ]}
-                />
+                    <FilterBar
+                        url={toUrl(index())}
+                        search={filters.search}
+                        status={filters.status}
+                        sort={filters.sort}
+                        statusOptions={[
+                            {
+                                value: 'active',
+                                label: t('savingsStatusRunning'),
+                            },
+                            {
+                                value: 'completed',
+                                label: t('savingsStatusAchieved'),
+                            },
+                        ]}
+                        sortOptions={[
+                            {
+                                value: 'created_at',
+                                label: t('savingsColCreated'),
+                            },
+                            {
+                                value: 'target_amount',
+                                label: t('savingsColTarget'),
+                            },
+                            {
+                                value: 'end_date',
+                                label: t('savingsColDeadline'),
+                            },
+                            { value: 'title', label: t('savingsColTitle') },
+                        ]}
+                    />
+                </PagePanel>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <>
-                        {goals.data.length === 0 && (
-                            <p className="col-span-full py-10 text-center text-sm text-muted-foreground">
-                                {t('savingsEmpty')}
-                            </p>
-                        )}
+                <PagePanel className="flex-1">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                        <>
+                            {goals.data.length === 0 && (
+                                <p className="col-span-full py-10 text-center text-sm text-muted-foreground">
+                                    {t('savingsEmpty')}
+                                </p>
+                            )}
 
-                        {goals.data.map((goal) => (
-                            <GoalCard key={goal.id} goal={goal} />
-                        ))}
-                    </>
-                </div>
+                            {goals.data.map((goal) => (
+                                <GoalCard key={goal.id} goal={goal} />
+                            ))}
+                        </>
+                    </div>
+                </PagePanel>
 
                 <Pagination links={goals.links} />
             </div>
 
             <GoalFormDialog open={open} onOpenChange={setOpen} />
+
+            <FloatingActionButton onClick={() => setOpen(true)}>
+                <Plus className="size-4" />
+                {t('savingsNewTarget')}
+            </FloatingActionButton>
         </>
     );
 }

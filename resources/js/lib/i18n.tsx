@@ -204,6 +204,40 @@ const translations = {
         id: 'Memutar preview',
     },
 
+    /* ── Notifications page (in-app) ──────────────────────────────────── */
+    pageNotifications: { en: 'Notifications', id: 'Notifikasi' },
+    notificationsPageDescription: {
+        en: 'Updates and reminders from your app',
+        id: 'Pembaruan dan pengingat dari aplikasimu',
+    },
+    notifUnread: { en: 'unread', id: 'belum dibaca' },
+    notifEmptyTitle: { en: 'No notifications', id: 'Tidak ada notifikasi' },
+    notifEmptyBody: {
+        en: "You're all caught up",
+        id: 'Semuanya sudah dibaca',
+    },
+    notifTypeReminder: { en: 'Reminder', id: 'Pengingat' },
+    notifTypeSavings: { en: 'Savings', id: 'Nabung' },
+    notifTypeCashflow: { en: 'Cashflow', id: 'Kas' },
+    notifTypeBusiness: { en: 'Business', id: 'Bisnis' },
+    notifTypeInfo: { en: 'Info', id: 'Info' },
+
+    /* ── Page banner stats (short labels) ─────────────────────────────── */
+    bannerActive: { en: 'Active', id: 'Aktif' },
+    bannerAchieved: { en: 'Achieved', id: 'Tercapai' },
+    bannerTotal: { en: 'Total', id: 'Total' },
+    bannerSaved: { en: 'Saved', id: 'Terkumpul' },
+    bannerIncome: { en: 'Income', id: 'Masuk' },
+    bannerExpense: { en: 'Expense', id: 'Keluar' },
+    bannerNetto: { en: 'Netto', id: 'Bersih' },
+    bannerPending: { en: 'Pending', id: 'Berjalan' },
+    bannerOverdue: { en: 'Overdue', id: 'Terlewat' },
+    bannerDone: { en: 'Done', id: 'Selesai' },
+    bannerDueToday: { en: 'Due today', id: 'Hari ini' },
+    bannerBusinesses: { en: 'Business', id: 'Bisnis' },
+    bannerTransactions: { en: 'Transactions', id: 'Transaksi' },
+    bannerUnread: { en: 'Unread', id: 'Belum dibaca' },
+
     /* ── Settings: Security ───────────────────────────────────────────── */
     securityTitle: { en: 'Security', id: 'Keamanan' },
     securityDescription: {

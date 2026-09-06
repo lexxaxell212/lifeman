@@ -1,8 +1,19 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowRight, CalendarClock, Plus, Wallet } from 'lucide-react';
+import {
+    ArrowDown,
+    ArrowRight,
+    ArrowUp,
+    CalendarClock,
+    Plus,
+    Scale,
+    Wallet,
+} from 'lucide-react';
 import { useState } from 'react';
 import { FilterBar } from '@/components/filter-bar';
+import { FloatingActionButton } from '@/components/floating-action-button';
 import { NettoBadge } from '@/components/netto-badge';
+import { PageBanner } from '@/components/page-banner';
+import { PagePanel } from '@/components/page-panel';
 import { Pagination } from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,6 +39,12 @@ type Props = {
         search: string;
         sort: string;
     };
+    stats: {
+        total: number;
+        income: number;
+        expense: number;
+        netto: number;
+    };
 };
 
 type CashflowForm = {
@@ -37,7 +54,7 @@ type CashflowForm = {
     notes: string;
 };
 
-export default function CashflowsIndex({ cashflows, filters }: Props) {
+export default function CashflowsIndex({ cashflows, filters, stats }: Props) {
     const [open, setOpen] = useState(false);
     const { t } = useI18n();
 
@@ -45,9 +62,38 @@ export default function CashflowsIndex({ cashflows, filters }: Props) {
         <>
             <Head title={t('pageCashflowIndex')} />
 
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between gap-3">
-                    <div>
+            <div className="flex min-h-screen flex-col gap-4">
+                <PageBanner
+                    stats={[
+                        {
+                            key: 'total',
+                            label: t('bannerTotal'),
+                            value: stats.total,
+                            icon: Wallet,
+                        },
+                        {
+                            key: 'income',
+                            label: t('bannerIncome'),
+                            value: formatMoney(stats.income),
+                            icon: ArrowUp,
+                        },
+                        {
+                            key: 'expense',
+                            label: t('bannerExpense'),
+                            value: formatMoney(stats.expense),
+                            icon: ArrowDown,
+                        },
+                        {
+                            key: 'netto',
+                            label: t('bannerNetto'),
+                            value: formatMoney(stats.netto),
+                            icon: Scale,
+                        },
+                    ]}
+                />
+
+                <PagePanel>
+                    <div className="mb-3">
                         <h1 className="text-2xl font-bold tracking-tight">
                             {t('pageCashflowIndex')}
                         </h1>
@@ -55,44 +101,47 @@ export default function CashflowsIndex({ cashflows, filters }: Props) {
                             {t('cashflowSubtitle')}
                         </p>
                     </div>
-                    <Button onClick={() => setOpen(true)}>
-                        <Plus className="size-4" />
-                        {t('cashflowNew')}
-                    </Button>
-                </div>
 
-                <FilterBar
-                    url={toUrl(index())}
-                    search={filters.search}
-                    sort={filters.sort}
-                    sortOptions={[
-                        { value: 'latest', label: t('newest') },
-                        { value: 'oldest', label: t('oldest') },
-                    ]}
-                    sortPlaceholder={t('newest')}
-                />
+                    <FilterBar
+                        url={toUrl(index())}
+                        search={filters.search}
+                        sort={filters.sort}
+                        sortOptions={[
+                            { value: 'latest', label: t('newest') },
+                            { value: 'oldest', label: t('oldest') },
+                        ]}
+                        sortPlaceholder={t('newest')}
+                    />
+                </PagePanel>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <>
-                        {cashflows.data.length === 0 && (
-                            <p className="col-span-full py-10 text-center text-sm text-muted-foreground">
-                                {t('cashflowEmpty')}
-                            </p>
-                        )}
+                <PagePanel className="flex-1">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                        <>
+                            {cashflows.data.length === 0 && (
+                                <p className="col-span-full py-10 text-center text-sm text-muted-foreground">
+                                    {t('cashflowEmpty')}
+                                </p>
+                            )}
 
-                        {cashflows.data.map((cashflow) => (
-                            <CashflowCard
-                                key={cashflow.id}
-                                cashflow={cashflow}
-                            />
-                        ))}
-                    </>
-                </div>
+                            {cashflows.data.map((cashflow) => (
+                                <CashflowCard
+                                    key={cashflow.id}
+                                    cashflow={cashflow}
+                                />
+                            ))}
+                        </>
+                    </div>
+                </PagePanel>
 
                 <Pagination links={cashflows.links} />
             </div>
 
             <CashflowFormDialog open={open} onOpenChange={setOpen} />
+
+            <FloatingActionButton onClick={() => setOpen(true)}>
+                <Plus className="size-4" />
+                {t('cashflowNew')}
+            </FloatingActionButton>
         </>
     );
 }

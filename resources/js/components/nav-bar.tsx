@@ -1,9 +1,10 @@
-import { usePage } from '@inertiajs/react';
-import { Menu, X } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { Bell, Menu, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
-import { pageTitleKey } from '@/lib/page-title';
+import { toUrl } from '@/lib/utils';
+import { index as notificationsIndex } from '@/routes/notifications';
 
 type Props = {
     open: boolean;
@@ -11,7 +12,6 @@ type Props = {
 };
 
 export function NavBar({ open, onToggle }: Props) {
-    const page = usePage();
     const { t } = useI18n();
 
     return (
@@ -47,9 +47,20 @@ export function NavBar({ open, onToggle }: Props) {
                     </span>
                 </Button>
 
-                <span className="ml-auto truncate text-base font-semibold tracking-tight">
-                    {t(pageTitleKey(page.component))}
-                </span>
+                <Button
+                    asChild
+                    variant="ghost"
+                    size="icon"
+                    className="ml-auto rounded-xl text-foreground"
+                    aria-label={t('pageNotifications')}
+                >
+                    <Link href={toUrl(notificationsIndex())}>
+                        <span className="relative flex size-6 items-center justify-center">
+                            <Bell className="size-5" />
+                            <span className="absolute top-0 right-0 size-2 rounded-full bg-destructive" />
+                        </span>
+                    </Link>
+                </Button>
             </div>
         </nav>
     );

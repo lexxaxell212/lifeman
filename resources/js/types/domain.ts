@@ -73,6 +73,16 @@ export type PaginatedData<T> = {
     to: number;
 };
 
+export type AppNotification = {
+    id: number;
+    type:
+        'reminder_due' | 'savings_achieved' | 'cashflow' | 'business' | 'info';
+    title: string;
+    body?: string;
+    created_at: string;
+    read: boolean;
+};
+
 export type Business = {
     id: number;
     name: string;

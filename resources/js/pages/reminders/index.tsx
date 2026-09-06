@@ -1,5 +1,6 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import {
+    Bell,
     CalendarX2,
     Check,
     CircleCheck,
@@ -11,6 +12,9 @@ import {
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { FilterBar } from '@/components/filter-bar';
+import { FloatingActionButton } from '@/components/floating-action-button';
+import { PageBanner } from '@/components/page-banner';
+import { PagePanel } from '@/components/page-panel';
 import { Pagination } from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,6 +42,12 @@ type Props = {
         sort: string;
         dir: string;
     };
+    stats: {
+        pending: number;
+        overdue: number;
+        done: number;
+        dueToday: number;
+    };
 };
 
 type ReminderForm = {
@@ -57,7 +67,7 @@ function toDateTimeLocal(value: string | null | undefined): string {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-export default function RemindersIndex({ reminders, filters }: Props) {
+export default function RemindersIndex({ reminders, filters, stats }: Props) {
     const [createOpen, setCreateOpen] = useState(false);
     const [editing, setEditing] = useState<Reminder | null>(null);
     const { t } = useI18n();
@@ -66,9 +76,38 @@ export default function RemindersIndex({ reminders, filters }: Props) {
         <>
             <Head title={t('pageReminders')} />
 
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between gap-3">
-                    <div>
+            <div className="flex min-h-screen flex-col gap-4">
+                <PageBanner
+                    stats={[
+                        {
+                            key: 'pending',
+                            label: t('bannerPending'),
+                            value: stats.pending,
+                            icon: Bell,
+                        },
+                        {
+                            key: 'dueToday',
+                            label: t('bannerDueToday'),
+                            value: stats.dueToday,
+                            icon: Clock3,
+                        },
+                        {
+                            key: 'overdue',
+                            label: t('bannerOverdue'),
+                            value: stats.overdue,
+                            icon: CalendarX2,
+                        },
+                        {
+                            key: 'done',
+                            label: t('bannerDone'),
+                            value: stats.done,
+                            icon: CircleCheck,
+                        },
+                    ]}
+                />
+
+                <PagePanel>
+                    <div className="mb-3">
                         <h1 className="text-2xl font-bold tracking-tight">
                             {t('pageReminders')}
                         </h1>
@@ -76,53 +115,57 @@ export default function RemindersIndex({ reminders, filters }: Props) {
                             {t('remindersSubtitle')}
                         </p>
                     </div>
-                    <Button onClick={() => setCreateOpen(true)}>
-                        <Plus className="size-4" />
-                        {t('remindersAdd')}
-                    </Button>
-                </div>
 
-                <FilterBar
-                    url={toUrl(index())}
-                    search={filters.search}
-                    status={filters.status}
-                    sort={filters.sort}
-                    statusOptions={[
-                        { value: 'pending', label: t('remindersStatusActive') },
-                        { value: 'done', label: t('remindersStatusDone') },
-                        {
-                            value: 'overdue',
-                            label: t('remindersStatusOverdue'),
-                        },
-                    ]}
-                    sortOptions={[
-                        { value: 'remind_at', label: t('remindersColTime') },
-                        {
-                            value: 'created_at',
-                            label: t('remindersColCreated'),
-                        },
-                        { value: 'title', label: t('remindersColTitle') },
-                        { value: 'done_at', label: t('remindersColDone') },
-                    ]}
-                />
+                    <FilterBar
+                        url={toUrl(index())}
+                        search={filters.search}
+                        status={filters.status}
+                        sort={filters.sort}
+                        statusOptions={[
+                            {
+                                value: 'pending',
+                                label: t('remindersStatusActive'),
+                            },
+                            { value: 'done', label: t('remindersStatusDone') },
+                            {
+                                value: 'overdue',
+                                label: t('remindersStatusOverdue'),
+                            },
+                        ]}
+                        sortOptions={[
+                            {
+                                value: 'remind_at',
+                                label: t('remindersColTime'),
+                            },
+                            {
+                                value: 'created_at',
+                                label: t('remindersColCreated'),
+                            },
+                            { value: 'title', label: t('remindersColTitle') },
+                            { value: 'done_at', label: t('remindersColDone') },
+                        ]}
+                    />
+                </PagePanel>
 
-                <div className="flex flex-col gap-3">
-                    <>
-                        {reminders.data.length === 0 && (
-                            <p className="py-10 text-center text-sm text-muted-foreground">
-                                {t('remindersEmpty')}
-                            </p>
-                        )}
+                <PagePanel className="flex-1">
+                    <div className="flex flex-col gap-3">
+                        <>
+                            {reminders.data.length === 0 && (
+                                <p className="py-10 text-center text-sm text-muted-foreground">
+                                    {t('remindersEmpty')}
+                                </p>
+                            )}
 
-                        {reminders.data.map((reminder) => (
-                            <ReminderCard
-                                key={reminder.id}
-                                reminder={reminder}
-                                onEdit={() => setEditing(reminder)}
-                            />
-                        ))}
-                    </>
-                </div>
+                            {reminders.data.map((reminder) => (
+                                <ReminderCard
+                                    key={reminder.id}
+                                    reminder={reminder}
+                                    onEdit={() => setEditing(reminder)}
+                                />
+                            ))}
+                        </>
+                    </div>
+                </PagePanel>
 
                 <Pagination links={reminders.links} />
             </div>
@@ -142,6 +185,11 @@ export default function RemindersIndex({ reminders, filters }: Props) {
                 title={t('remindersEditTitle')}
                 description={t('remindersEditHelp')}
             />
+
+            <FloatingActionButton onClick={() => setCreateOpen(true)}>
+                <Plus className="size-4" />
+                {t('remindersAdd')}
+            </FloatingActionButton>
         </>
     );
 }

@@ -190,7 +190,69 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('cashflow-items/{cashflow_item}', [CashflowItemController::class, 'update'])->name('cashflow-items.update');
     Route::delete('cashflow-items/{cashflow_item}', [CashflowItemController::class, 'destroy'])->name('cashflow-items.destroy');
 
-    Route::get('personal', fn () => Inertia::render('personal/index'))->name('personal.index');
+    Route::get('personal', function () {
+        $user = auth()->user();
+
+        $cashflow = Cashflow::query()
+            ->whereBelongsTo($user)
+            ->withSum(['items as income_total' => fn ($q) => $q->income()], 'amount')
+            ->withSum(['items as expense_total' => fn ($q) => $q->expense()], 'amount')
+            ->get();
+
+        $income = (float) $cashflow->sum('income_total');
+        $expense = (float) $cashflow->sum('expense_total');
+
+        return Inertia::render('personal/index', [
+            'stats' => [
+                'saved' => (float) SavingsGoal::query()
+                    ->whereBelongsTo($user)
+                    ->withSum('payments as paid_amount', 'amount')
+                    ->get()
+                    ->sum('paid_amount'),
+                'netto' => $income - $expense,
+                'pendingReminders' => Reminder::query()->whereBelongsTo($user)->pending()->count(),
+            ],
+        ]);
+    })->name('personal.index');
+
+    Route::get('notifications', function () {
+        return Inertia::render('notifications/index', [
+            'notifications' => [
+                [
+                    'id' => 1,
+                    'type' => 'reminder_due',
+                    'title' => 'Bayar listrik bulanan',
+                    'body' => 'Jangan lupa bayar tagihan listrik sebelum jatuh tempo.',
+                    'created_at' => now()->subMinutes(12)->toISOString(),
+                    'read' => false,
+                ],
+                [
+                    'id' => 2,
+                    'type' => 'savings_achieved',
+                    'title' => 'Target tercapai!',
+                    'body' => 'Tabungan "Moto baru" sudah mencapai target.',
+                    'created_at' => now()->subHours(3)->toISOString(),
+                    'read' => false,
+                ],
+                [
+                    'id' => 3,
+                    'type' => 'reminder_due',
+                    'title' => 'Bayar kontrakan',
+                    'body' => 'Tagihan kontrakan bulan ini sudah jatuh tempo.',
+                    'created_at' => now()->subDays(1)->toISOString(),
+                    'read' => true,
+                ],
+                [
+                    'id' => 4,
+                    'type' => 'info',
+                    'title' => 'Selamat datang di LifeMan',
+                    'body' => 'Kelola keuanganmu lebih mudah bersama LifeMan.',
+                    'created_at' => now()->subDays(2)->toISOString(),
+                    'read' => true,
+                ],
+            ],
+        ]);
+    })->name('notifications.index');
 
     Route::resource('businesses', BusinessController::class)->except(['edit']);
     Route::post('businesses/{business}/transactions', [BusinessTransactionController::class, 'store'])->name('business-transactions.store');
