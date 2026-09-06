@@ -1,0 +1,57 @@
+server {
+	server_name lifeman.lxx.my.id;
+
+	root /var/www/lifeman/public;
+	index index.php;
+
+	server_tokens off;
+	client_max_body_size 8M;
+
+	add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+	add_header X-Content-Type-Options "nosniff" always;
+	add_header X-Frame-Options "SAMEORIGIN" always;
+	add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+	add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+
+	location / {
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php-fpm.sock;
+		fastcgi_buffer_size 32k;
+		fastcgi_buffers 8 32k;
+		fastcgi_busy_buffers_size 64k;
+	}
+
+	location ~ /\.well-known/acme-challenge/ {
+		allow all;
+	}
+
+	location ~ /\. {
+		deny all;
+	}
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/lifeman.lxx.my.id/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/lifeman.lxx.my.id/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = lifeman.lxx.my.id) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+	server_name lifeman.lxx.my.id;
+
+	listen 80;
+	listen [::]:80;
+    return 404; # managed by Certbot
+
+
+}
