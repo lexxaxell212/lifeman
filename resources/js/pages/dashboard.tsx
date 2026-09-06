@@ -71,19 +71,13 @@ export default function Dashboard({ auth, stats }: Props) {
                             </p>
                         </div>
                         <div className="flex shrink-0 gap-2">
-                            <Button
-                                asChild
-                                variant="secondary"
-                            >
+                            <Button asChild variant="secondary">
                                 <Link href={toUrl(remindersIndex())}>
                                     <AlarmClock className="size-4" />
                                     {t('dashReminders')}
                                 </Link>
                             </Button>
-                            <Button
-                                asChild
-                                variant="secondary"
-                            >
+                            <Button asChild variant="secondary">
                                 <Link href={toUrl(savingsIndex())}>
                                     <PiggyBank className="size-4" />
                                     {t('dashSavings')}

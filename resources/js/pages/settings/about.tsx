@@ -147,7 +147,11 @@ export default function About() {
                                     Detail: {update.errorMessage}
                                 </p>
                             )}
-                            <Button variant="outline" size="sm" onClick={recheck}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={recheck}
+                            >
                                 <RefreshCw className="size-4" />
                                 {t('tryAgain')}
                             </Button>
@@ -197,10 +201,7 @@ export default function About() {
                     )}
                 </SettingsSection>
 
-                <SettingsSection
-                    icon={ListOrdered}
-                    title={t('aboutChangelog')}
-                >
+                <SettingsSection icon={ListOrdered} title={t('aboutChangelog')}>
                     {update?.changelog ? (
                         <div className="space-y-3">
                             <p className="text-sm font-medium text-muted-foreground">

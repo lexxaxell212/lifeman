@@ -994,7 +994,10 @@ const translations = {
     authName: { en: 'Name', id: 'Nama' },
     authEmail: { en: 'Email address', id: 'Alamat email' },
     authPassword: { en: 'Password', id: 'Kata sandi' },
-    authConfirmPassword: { en: 'Confirm password', id: 'Konfirmasi kata sandi' },
+    authConfirmPassword: {
+        en: 'Confirm password',
+        id: 'Konfirmasi kata sandi',
+    },
     authRemember: { en: 'Remember me', id: 'Ingat saya' },
     authForgotPassword: {
         en: 'Forgot your password?',

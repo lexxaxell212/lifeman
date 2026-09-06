@@ -5,7 +5,11 @@ export function NettoBadge({ netto }: { netto: number }) {
     const { t } = useI18n();
 
     if (netto > 0) {
-        return <Badge className="bg-emerald-500 text-white">{t('nettoSurplus')}</Badge>;
+        return (
+            <Badge className="bg-emerald-500 text-white">
+                {t('nettoSurplus')}
+            </Badge>
+        );
     }
 
     if (netto < 0) {

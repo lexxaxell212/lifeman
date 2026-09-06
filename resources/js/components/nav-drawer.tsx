@@ -129,7 +129,7 @@ export function NavDrawer({ open, onOpenChange }: Props) {
                 <SheetHeader className="border-b px-6 py-5 text-left">
                     <div className="flex items-center gap-3">
                         <Avatar className="size-11">
-                            <AvatarFallback className="bg-primary/15 text-primary text-sm font-bold">
+                            <AvatarFallback className="bg-primary/15 text-sm font-bold text-primary">
                                 {user ? getInitials(user.name) : 'LM'}
                             </AvatarFallback>
                         </Avatar>

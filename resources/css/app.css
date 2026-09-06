@@ -161,7 +161,11 @@
     }
 
     ::selection {
-        background: color-mix(in oklch, var(--color-brand-500) 22%, transparent);
+        background: color-mix(
+            in oklch,
+            var(--color-brand-500) 22%,
+            transparent
+        );
     }
 
     body::before {

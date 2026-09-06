@@ -152,8 +152,7 @@ export default function Appearance() {
                                     key={sound.id}
                                     className={cn(
                                         'cursor-pointer rounded-xl transition-all duration-200',
-                                        isSelected &&
-                                            'border-primary',
+                                        isSelected && 'border-primary',
                                     )}
                                     onClick={() => choose(sound.id)}
                                 >
