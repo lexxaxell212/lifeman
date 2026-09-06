@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 import { markReactMounted } from '@/lib/diagnose';
+import { getT } from '@/lib/i18n';
 
 type AppErrorBoundaryProps = {
     label: string;
@@ -35,6 +36,7 @@ export class AppErrorBoundary extends Component<
 
     render(): ReactNode {
         const { error } = this.state;
+        const t = getT();
 
         if (error === null) {
             return this.props.children;
@@ -43,7 +45,7 @@ export class AppErrorBoundary extends Component<
         return (
             <div className="fixed inset-0 z-[99999] flex flex-col gap-3 overflow-auto bg-red-950 p-6 font-mono text-xs text-red-100">
                 <p className="text-base font-bold text-red-300">
-                    ERROR DI {this.props.label.toUpperCase()}
+                    {t('errorTitle')} {this.props.label.toUpperCase()}
                 </p>
                 <p>URL: {window.location.href}</p>
                 <p>
@@ -55,7 +57,7 @@ export class AppErrorBoundary extends Component<
                     className="mt-2 w-fit rounded-md bg-white px-3 py-1.5 font-sans text-sm font-medium text-red-950"
                     onClick={() => this.setState({ error: null })}
                 >
-                    Tutup (coba lagi)
+                    {t('errorRetry')}
                 </button>
             </div>
         );

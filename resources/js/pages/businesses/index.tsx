@@ -6,23 +6,25 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDate } from '@/lib/format';
+import { getT, useI18n } from '@/lib/i18n';
 import { toUrl } from '@/lib/utils';
 import { create, destroy, index, show } from '@/routes/businesses';
 import type { Business } from '@/types';
-
-const periodLabels: Record<Business['rekap_period'], string> = {
-    weekly: 'Mingguan',
-    monthly: 'Bulanan',
-    yearly: 'Tahunan',
-};
 
 type Props = {
     businesses: Business[];
 };
 
 export default function BusinessesIndex({ businesses }: Props) {
+    const { t } = useI18n();
     const [pending, setPending] = useState<Business | null>(null);
     const [deleting, setDeleting] = useState(false);
+
+    const periodLabels: Record<Business['rekap_period'], string> = {
+        weekly: t('businessPeriodWeek'),
+        monthly: t('businessPeriodMonth'),
+        yearly: t('businessPeriodYear'),
+    };
 
     function confirmDelete(): void {
         if (!pending) {
@@ -42,22 +44,22 @@ export default function BusinessesIndex({ businesses }: Props) {
 
     return (
         <>
-            <Head title="Bisnis" />
+            <Head title={t('pageBusinessIndex')} />
 
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">
-                            Manajemen Bisnis
+                            {t('businessManagement')}
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Pantau kas, pengeluaran, dan laba/rugi bisnismu.
+                            {t('businessSubtitle')}
                         </p>
                     </div>
                     <Button asChild>
                         <Link href={toUrl(create())}>
                             <Plus className="size-4" />
-                            Bisnis Baru
+                            {t('businessNewButton')}
                         </Link>
                     </Button>
                 </div>
@@ -69,17 +71,16 @@ export default function BusinessesIndex({ businesses }: Props) {
                         </div>
                         <div>
                             <p className="font-semibold">
-                                Belum ada manajemen bisnis
+                                {t('businessEmpty')}
                             </p>
                             <p className="mt-1 text-sm text-muted-foreground">
-                                Buat bisnis pertamamu untuk mulai mencatat kas
-                                harian dan menganalisis laba/rugi.
+                                {t('businessEmptyHelp')}
                             </p>
                         </div>
                         <Button asChild>
                             <Link href={toUrl(create())}>
                                 <Plus className="size-4" />
-                                Buat Bisnis
+                                {t('businessCreateButton')}
                             </Link>
                         </Button>
                     </div>
@@ -129,12 +130,12 @@ export default function BusinessesIndex({ businesses }: Props) {
                                 </CardHeader>
                                 <CardContent className="flex items-center justify-between text-xs text-muted-foreground">
                                     <span>
-                                        Mulai{' '}
+                                        {t('businessStart')}{' '}
                                         {formatDate(business.period_start)}
                                     </span>
                                     <span>
                                         {business.transactions_count ?? 0}{' '}
-                                        catatan
+                                        {t('businessRecords')}
                                     </span>
                                 </CardContent>
                             </Card>
@@ -146,10 +147,10 @@ export default function BusinessesIndex({ businesses }: Props) {
             <ConfirmDialog
                 open={pending !== null}
                 onOpenChange={(open) => !open && setPending(null)}
-                title="Hapus bisnis"
+                title={t('businessDelete')}
                 description={
                     pending
-                        ? `Hapus manajemen bisnis "${pending.name}"? Semua catatannya ikut terhapus.`
+                        ? `${t('businessDeleteConfirm')} "${pending.name}"`
                         : undefined
                 }
                 processing={deleting}
@@ -159,10 +160,12 @@ export default function BusinessesIndex({ businesses }: Props) {
     );
 }
 
+const businessIndexBreadcrumb = getT();
+
 BusinessesIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Bisnis',
+            title: businessIndexBreadcrumb('pageBusinessIndex'),
             href: toUrl(index()),
         },
     ],

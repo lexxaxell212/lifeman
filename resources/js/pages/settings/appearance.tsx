@@ -1,10 +1,12 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Bell, Check, Palette, Volume2 } from 'lucide-react';
+import { Bell, Check, Languages, Palette, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import AppearanceTabs from '@/components/appearance-tabs';
 import Heading from '@/components/heading';
+import { LanguageSelector } from '@/components/language-selector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import {
     SOUNDS,
     isNativePlatform,
@@ -21,6 +23,7 @@ type PageProps = {
 
 export default function Appearance() {
     const { auth } = usePage<PageProps>().props;
+    const { t } = useI18n();
     const [selected, setSelected] = useState(
         auth.user.notification_sound ?? 'default',
     );
@@ -81,16 +84,35 @@ export default function Appearance() {
 
     return (
         <>
-            <Head title="Tampilan dan Suara" />
+            <Head title={t('appearanceTitle')} />
 
-            <h1 className="sr-only">Pengaturan tampilan dan suara</h1>
+            <h1 className="sr-only">{t('appearanceDescription')}</h1>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <Heading
                     variant="small"
                     title="Tampilan dan Suara"
                     description="Pilih tema dan suara notifikasi yang paling nyaman untukmu"
                 />
+
+                <Card className="overflow-hidden rounded-2xl">
+                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
+                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                            <Languages className="size-4" />
+                        </span>
+                        <div>
+                            <CardTitle className="text-base">
+                                {t('langLabel')}
+                            </CardTitle>
+                            <p className="text-xs text-muted-foreground">
+                                {t('langDescription')}
+                            </p>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="px-4 py-3">
+                        <LanguageSelector />
+                    </CardContent>
+                </Card>
 
                 <Card className="overflow-hidden rounded-2xl">
                     <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">

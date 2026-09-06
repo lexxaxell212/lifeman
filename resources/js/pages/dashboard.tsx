@@ -10,6 +10,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { formatMoney } from '@/lib/format';
+import { getT, useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { index as remindersIndex } from '@/routes/reminders';
@@ -32,6 +33,7 @@ type Props = {
 };
 
 export default function Dashboard({ auth, stats }: Props) {
+    const { t } = useI18n();
     const firstName = auth.user.name.split(' ')[0];
     const today = new Date().toLocaleDateString('id-ID', {
         weekday: 'long',
@@ -45,13 +47,13 @@ export default function Dashboard({ auth, stats }: Props) {
 
     return (
         <>
-            <Head title="Beranda" />
+            <Head title={t('pageDashboard')} />
 
             <div className="flex flex-col gap-3">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Halo,{' '}
-                        <span className="text-amber-600 dark:text-amber-400">
+                        {t('dashGreeting')}{' '}
+                        <span className="text-brand-600 dark:text-brand-400">
                             {firstName}
                         </span>
                     </h1>
@@ -62,10 +64,10 @@ export default function Dashboard({ auth, stats }: Props) {
                     <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm font-medium opacity-80">
-                                Apa yang mau kamu kelola hari ini?
+                                {t('dashSubtitle')}
                             </p>
                             <p className="mt-1 text-xl font-bold tracking-tight">
-                                Kelola pengingat & tabunganmu di satu tempat
+                                {t('dashTagline')}
                             </p>
                         </div>
                         <div className="flex shrink-0 gap-2">
@@ -76,7 +78,7 @@ export default function Dashboard({ auth, stats }: Props) {
                             >
                                 <Link href={toUrl(remindersIndex())}>
                                     <AlarmClock className="size-4" />
-                                    Ingetin
+                                    {t('dashReminders')}
                                 </Link>
                             </Button>
                             <Button
@@ -86,7 +88,7 @@ export default function Dashboard({ auth, stats }: Props) {
                             >
                                 <Link href={toUrl(savingsIndex())}>
                                     <PiggyBank className="size-4" />
-                                    Nabung
+                                    {t('dashSavings')}
                                 </Link>
                             </Button>
                         </div>
@@ -118,12 +120,13 @@ export default function Dashboard({ auth, stats }: Props) {
                                         variant="destructive"
                                         className="font-medium"
                                     >
-                                        {stats.overdueReminders} terlewat
+                                        {stats.overdueReminders}{' '}
+                                        {t('dashOverdue')}
                                     </Badge>
                                 )}
                             </div>
                             <p className="text-sm text-muted-foreground">
-                                Ingetin aktif
+                                {t('dashActiveReminders')}
                             </p>
                             <CardTitle className="text-2xl">
                                 {stats.pendingReminders}
@@ -136,7 +139,7 @@ export default function Dashboard({ auth, stats }: Props) {
                                 <Target className="size-4" />
                             </div>
                             <p className="text-sm text-muted-foreground">
-                                Target nabung aktif
+                                {t('dashActiveSavings')}
                             </p>
                             <CardTitle className="text-2xl">
                                 {stats.activeGoals}
@@ -149,7 +152,7 @@ export default function Dashboard({ auth, stats }: Props) {
                                 <Wallet className="size-4" />
                             </div>
                             <p className="text-sm text-muted-foreground">
-                                Total terkumpul
+                                {t('dashTotalSaved')}
                             </p>
                             <CardTitle className="text-2xl">
                                 {formatMoney(stats.savedAmount)}
@@ -162,7 +165,7 @@ export default function Dashboard({ auth, stats }: Props) {
                                 <Wallet className="size-4" />
                             </div>
                             <p className="text-sm text-muted-foreground">
-                                Netto kas terakhir
+                                {t('dashLastNetto')}
                             </p>
                             <CardTitle className="text-2xl">
                                 {stats.latestCashflow
@@ -173,7 +176,7 @@ export default function Dashboard({ auth, stats }: Props) {
                                 <NettoBadge netto={cashflowNetto} />
                             ) : (
                                 <CardDescription className="text-xs">
-                                    Belum ada catatan kas
+                                    {t('dashNoCashflow')}
                                 </CardDescription>
                             )}
                         </CardHeader>
@@ -184,10 +187,12 @@ export default function Dashboard({ auth, stats }: Props) {
     );
 }
 
+const t = getT();
+
 Dashboard.layout = {
     breadcrumbs: [
         {
-            title: 'Beranda',
+            title: t('pageDashboard'),
             href: dashboard(),
         },
     ],

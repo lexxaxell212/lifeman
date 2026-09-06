@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { AlarmClock, ArrowRight, PiggyBank, Wallet } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { getT, useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { index as cashflowsIndex } from '@/routes/cashflows';
@@ -8,42 +9,43 @@ import { index as personalIndexRoute } from '@/routes/personal';
 import { index as remindersIndex } from '@/routes/reminders';
 import { index as savingsIndex } from '@/routes/savings-goals';
 
-const items = [
-    {
-        title: 'Kas Pribadi',
-        description: 'Catat pemasukan & pengeluaran harian',
-        icon: Wallet,
-        href: cashflowsIndex(),
-        accent: 'bg-primary/10 text-primary',
-    },
-    {
-        title: 'Nabung',
-        description: 'Target tabungan dan cicilan',
-        icon: PiggyBank,
-        href: savingsIndex(),
-        accent: 'bg-muted text-foreground',
-    },
-    {
-        title: 'Ingetin',
-        description: 'Pengingat tugas dan jadwal',
-        icon: AlarmClock,
-        href: remindersIndex(),
-        accent: 'bg-muted text-foreground',
-    },
-];
-
 export default function PersonalIndex() {
+    const { t } = useI18n();
+    const items = [
+        {
+            title: t('personalCashTitle'),
+            description: t('personalCashDesc'),
+            icon: Wallet,
+            href: cashflowsIndex(),
+            accent: 'bg-primary/10 text-primary',
+        },
+        {
+            title: t('personalSavingsTitle'),
+            description: t('personalSavingsDesc'),
+            icon: PiggyBank,
+            href: savingsIndex(),
+            accent: 'bg-muted text-foreground',
+        },
+        {
+            title: t('personalRemindersTitle'),
+            description: t('personalRemindersDesc'),
+            icon: AlarmClock,
+            href: remindersIndex(),
+            accent: 'bg-muted text-foreground',
+        },
+    ];
+
     return (
         <>
-            <Head title="Pribadi" />
+            <Head title={t('pagePersonal')} />
 
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Pribadi
+                        {t('pagePersonal')}
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Kelola kebutuhan personalmu di satu tempat.
+                        {t('personalSubtitle')}
                     </p>
                 </div>
 
@@ -85,17 +87,19 @@ export default function PersonalIndex() {
                     href={toUrl(dashboard())}
                     className="text-sm font-medium text-primary hover:underline"
                 >
-                    Kembali ke Beranda
+                    {t('personalBackToHome')}
                 </Link>
             </div>
         </>
     );
 }
 
+const personalBreadcrumb = getT();
+
 PersonalIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Pribadi',
+            title: personalBreadcrumb('pagePersonal'),
             href: toUrl(personalIndexRoute()),
         },
     ],

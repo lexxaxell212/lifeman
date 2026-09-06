@@ -6,15 +6,16 @@ import {
     ExternalLink,
     Heart,
     Info,
+    ListOrdered,
     LoaderCircle,
     RefreshCw,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AppLogoIcon from '@/components/app-logo-icon';
-import Heading from '@/components/heading';
+import SettingsSection from '@/components/settings-section';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import { checkForUpdates } from '@/lib/update-check';
 import type { UpdateInfo } from '@/lib/update-check';
 
@@ -28,6 +29,7 @@ function openExternal(url: string): void {
 }
 
 export default function About() {
+    const { t } = useI18n();
     const { appVersion } = usePage().props;
     const [update, setUpdate] = useState<UpdateInfo | null>(null);
     const [checking, setChecking] = useState(true);
@@ -80,122 +82,35 @@ export default function About() {
 
     return (
         <>
-            <Head title="Versi App" />
+            <Head title={t('aboutVersion')} />
 
-            <h1 className="sr-only">Versi aplikasi</h1>
+            <h1 className="sr-only">{t('aboutAppInfo')}</h1>
 
-            <div className="space-y-4">
-                <Heading
-                    variant="small"
-                    title="Versi App"
-                    description="Info aplikasi, pembaruan, dan dukungan developer"
-                />
-
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-4">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Info className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                Info aplikasi
-                            </CardTitle>
+            <div className="space-y-3">
+                <SettingsSection
+                    icon={Info}
+                    title={t('aboutAppInfo')}
+                    description={t('aboutDescription')}
+                >
+                    <div className="flex items-center gap-3">
+                        <AppLogoIcon className="size-14 rounded-2xl" />
+                        <div className="min-w-0">
+                            <p className="text-lg font-semibold">{APP_NAME}</p>
+                            <p className="text-sm text-muted-foreground">
+                                {t('aboutVersionLabel')} {appVersion}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                {t('aboutDevelopedBy')} {DEVELOPER_NAME}
+                            </p>
                         </div>
-                    </CardHeader>
-                    <CardContent className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                            <AppLogoIcon className="size-14 rounded-2xl" />
-                            <div className="min-w-0">
-                                <p className="text-lg font-semibold">
-                                    {APP_NAME}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    Versi {appVersion}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    Dikembangkan oleh {DEVELOPER_NAME}
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </SettingsSection>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-4">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Download className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                Pembaruan
-                            </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 px-4 py-3">
-                        {checking ? (
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <LoaderCircle className="size-4 animate-spin" />
-                                Memeriksa pembaruan...
-                            </div>
-                        ) : update?.failed ? (
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <AlertCircle className="size-4 text-destructive" />
-                                    Tidak dapat memeriksa pembaruan. Pastikan
-                                    koneksi internetmu aktif.
-                                </div>
-                                {update.errorMessage && (
-                                    <p className="text-xs text-muted-foreground">
-                                        Detail: {update.errorMessage}
-                                    </p>
-                                )}
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={recheck}
-                                >
-                                    <RefreshCw className="size-4" />
-                                    Coba Lagi
-                                </Button>
-                            </div>
-                        ) : update?.updateAvailable ? (
-                            <div className="space-y-3">
-                                <Badge variant="destructive">
-                                    Update tersedia
-                                </Badge>
-                                <p className="text-sm text-muted-foreground">
-                                    Versi {update.latestVersion} sudah tersedia.
-                                    Kamu menggunakan versi {appVersion}.
-                                </p>
-                                <Button
-                                    onClick={() =>
-                                        openExternal(
-                                            update.downloadUrl ??
-                                                update.releaseUrl ??
-                                                '',
-                                        )
-                                    }
-                                >
-                                    <Download className="size-4" />
-                                    Update Aplikasi
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="space-y-3">
-                                <Badge
-                                    variant="secondary"
-                                    className="bg-emerald-100 text-emerald-700"
-                                >
-                                    <CheckCircle2 className="size-3.5" />
-                                    Sudah versi terbaru
-                                </Badge>
-                                <p className="text-sm text-muted-foreground">
-                                    Kamu menggunakan versi {appVersion}.
-                                </p>
-                            </div>
-                        )}
-
-                        <div className="flex items-center gap-3 border-t pt-4">
+                <SettingsSection
+                    icon={Download}
+                    title={t('aboutUpdate')}
+                    footer={
+                        <>
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -203,80 +118,133 @@ export default function About() {
                                 disabled={checking}
                             >
                                 <RefreshCw className="size-4" />
-                                Periksa Update
+                                {t('aboutCheckUpdates')}
                             </Button>
                             {checkedLabel && (
-                                <span className="text-xs text-muted-foreground">
-                                    Terakhir diperiksa {checkedLabel}
+                                <span className="text-sm text-muted-foreground">
+                                    {t('aboutLastChecked').replace(
+                                        '{time}',
+                                        checkedLabel,
+                                    )}
                                 </span>
                             )}
+                        </>
+                    }
+                >
+                    {checking ? (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <LoaderCircle className="size-4 animate-spin" />
+                            {t('aboutCheckingUpdates')}
                         </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-4">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Download className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                Changelog
-                            </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-4 py-3">
-                        {update?.changelog ? (
-                            <div className="space-y-3">
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Versi {update.latestVersion ?? appVersion}
-                                </p>
-                                <p className="max-h-56 overflow-y-auto text-sm whitespace-pre-wrap">
-                                    {update.changelog}
-                                </p>
-                                {releaseUrl && (
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => openExternal(releaseUrl)}
-                                    >
-                                        <ExternalLink className="size-4" />
-                                        Lihat semua rilis
-                                    </Button>
-                                )}
+                    ) : update?.failed ? (
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <AlertCircle className="size-4 text-destructive" />
+                                {t('aboutUpdateError')}
                             </div>
-                        ) : (
-                            <p className="text-sm text-muted-foreground">
-                                {update?.failed
-                                    ? 'Changelog tidak tersedia — periksa pembaruan gagal.'
-                                    : 'Belum ada changelog untuk versi ini.'}
-                            </p>
-                        )}
-                    </CardContent>
-                </Card>
-
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-4">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Heart className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                Dukung developer
-                            </CardTitle>
+                            {update.errorMessage && (
+                                <p className="text-xs text-muted-foreground">
+                                    Detail: {update.errorMessage}
+                                </p>
+                            )}
+                            <Button variant="outline" size="sm" onClick={recheck}>
+                                <RefreshCw className="size-4" />
+                                {t('tryAgain')}
+                            </Button>
                         </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 px-4 py-3">
+                    ) : update?.updateAvailable ? (
+                        <div className="space-y-3">
+                            <Badge variant="destructive">
+                                {t('aboutUpdateAvailable')}
+                            </Badge>
+                            <p className="text-sm text-muted-foreground">
+                                {t('aboutUpdateVersionHelp')
+                                    .replace(
+                                        '{latest}',
+                                        update.latestVersion ?? '',
+                                    )
+                                    .replace('{current}', appVersion)}
+                            </p>
+                            <Button
+                                onClick={() =>
+                                    openExternal(
+                                        update.downloadUrl ??
+                                            update.releaseUrl ??
+                                            '',
+                                    )
+                                }
+                            >
+                                <Download className="size-4" />
+                                {t('aboutUpdateButton')}
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            <Badge
+                                variant="secondary"
+                                className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
+                            >
+                                <CheckCircle2 className="size-3.5" />
+                                {t('aboutUpToDate')}
+                            </Badge>
+                            <p className="text-sm text-muted-foreground">
+                                {t('aboutCurrentVersion').replace(
+                                    '{version}',
+                                    appVersion,
+                                )}
+                            </p>
+                        </div>
+                    )}
+                </SettingsSection>
+
+                <SettingsSection
+                    icon={ListOrdered}
+                    title={t('aboutChangelog')}
+                >
+                    {update?.changelog ? (
+                        <div className="space-y-3">
+                            <p className="text-sm font-medium text-muted-foreground">
+                                {t('aboutVersionLabel')}{' '}
+                                {update.latestVersion ?? appVersion}
+                            </p>
+                            <p className="max-h-56 overflow-y-auto text-sm whitespace-pre-wrap">
+                                {update.changelog}
+                            </p>
+                            {releaseUrl && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => openExternal(releaseUrl)}
+                                >
+                                    <ExternalLink className="size-4" />
+                                    {t('aboutViewAllReleases')}
+                                </Button>
+                            )}
+                        </div>
+                    ) : (
                         <p className="text-sm text-muted-foreground">
-                            Suka menggunakan {APP_NAME}? Dukung pengembangan{' '}
-                            {APP_NAME} melalui Saweria.
+                            {update?.failed
+                                ? t('aboutChangelogEmpty')
+                                : t('aboutChangelogNone')}
                         </p>
-                        <Button onClick={() => openExternal(SUPPORT_URL)}>
-                            <Heart className="size-4" />
-                            Dukung di Saweria
-                        </Button>
-                    </CardContent>
-                </Card>
+                    )}
+                </SettingsSection>
+
+                <SettingsSection
+                    icon={Heart}
+                    title={t('aboutSupportDeveloper')}
+                >
+                    <p className="text-sm text-muted-foreground">
+                        {t('aboutSupportHelp').replace('{app}', APP_NAME)}
+                    </p>
+                    <Button
+                        className="mt-3"
+                        onClick={() => openExternal(SUPPORT_URL)}
+                    >
+                        <Heart className="size-4" />
+                        {t('aboutSupportButton')}
+                    </Button>
+                </SettingsSection>
             </div>
         </>
     );

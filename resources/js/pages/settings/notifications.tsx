@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import {
     SOUNDS,
     isNativePlatform,
@@ -18,6 +19,7 @@ type PageProps = {
 };
 
 export default function Notifications() {
+    const { t } = useI18n();
     const { auth } = usePage<PageProps>().props;
     const [selected, setSelected] = useState(
         auth.user.notification_sound ?? 'default',
@@ -79,13 +81,13 @@ export default function Notifications() {
 
     return (
         <>
-            <Head title="Notifikasi" />
+            <Head title={t('notificationsTitle')} />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <Heading
                     variant="small"
-                    title="Notifikasi"
-                    description="Pilih suara untuk notifikasi pengingat."
+                    title={t('notificationsTitle')}
+                    description={t('notificationsDescription')}
                 />
 
                 <Card className="overflow-hidden rounded-2xl">
@@ -95,7 +97,7 @@ export default function Notifications() {
                         </span>
                         <div>
                             <CardTitle className="text-base">
-                                Suara pengingat
+                                {t('notificationsSoundLabel')}
                             </CardTitle>
                         </div>
                     </CardHeader>
@@ -132,8 +134,9 @@ export default function Notifications() {
                                             </p>
                                             {isDefault && (
                                                 <p className="text-xs text-muted-foreground">
-                                                    Mengikuti suara notifikasi
-                                                    default perangkat.
+                                                    {t(
+                                                        'notificationsDefaultSound',
+                                                    )}
                                                 </p>
                                             )}
                                         </div>
@@ -141,7 +144,9 @@ export default function Notifications() {
                                         {isPlaying ? (
                                             <div
                                                 className="flex h-4 shrink-0 items-end gap-0.5"
-                                                aria-label="Memutar preview"
+                                                aria-label={t(
+                                                    'notificationsPlaying',
+                                                )}
                                             >
                                                 {[0, 1, 2].map((i) => (
                                                     <span
@@ -164,7 +169,7 @@ export default function Notifications() {
                                                         event.stopPropagation();
                                                         preview(sound.id);
                                                     }}
-                                                    title={`Putar ${sound.label}`}
+                                                    title={`${t('notifPlay')} ${sound.label}`}
                                                 >
                                                     <Volume2 className="size-4" />
                                                 </Button>

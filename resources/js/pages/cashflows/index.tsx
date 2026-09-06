@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatDate, formatMoney } from '@/lib/format';
+import { useI18n } from '@/lib/i18n';
 import { toUrl } from '@/lib/utils';
 import { show, store, index } from '@/routes/cashflows';
 import type { Cashflow, PaginatedData } from '@/types';
@@ -38,24 +39,25 @@ type CashflowForm = {
 
 export default function CashflowsIndex({ cashflows, filters }: Props) {
     const [open, setOpen] = useState(false);
+    const { t } = useI18n();
 
     return (
         <>
-            <Head title="Kas" />
+            <Head title={t('pageCashflowIndex')} />
 
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">
-                            Kas
+                            {t('pageCashflowIndex')}
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Catat pemasukan & pengeluaranmu per periode.
+                            {t('cashflowSubtitle')}
                         </p>
                     </div>
                     <Button onClick={() => setOpen(true)}>
                         <Plus className="size-4" />
-                        Kas Baru
+                        {t('cashflowNew')}
                     </Button>
                 </div>
 
@@ -64,17 +66,17 @@ export default function CashflowsIndex({ cashflows, filters }: Props) {
                     search={filters.search}
                     sort={filters.sort}
                     sortOptions={[
-                        { value: 'latest', label: 'Terbaru' },
-                        { value: 'oldest', label: 'Terlama' },
+                        { value: 'latest', label: t('newest') },
+                        { value: 'oldest', label: t('oldest') },
                     ]}
-                    sortPlaceholder="Terbaru"
+                    sortPlaceholder={t('newest')}
                 />
 
                 <div className="grid gap-3 sm:grid-cols-2">
                     <>
                         {cashflows.data.length === 0 && (
                             <p className="col-span-full py-10 text-center text-sm text-muted-foreground">
-                                Belum ada catatan kas.
+                                {t('cashflowEmpty')}
                             </p>
                         )}
 
@@ -96,6 +98,7 @@ export default function CashflowsIndex({ cashflows, filters }: Props) {
 }
 
 function CashflowCard({ cashflow }: { cashflow: Cashflow }) {
+    const { t } = useI18n();
     const income = Number(cashflow.income_total ?? 0);
     const expense = Number(cashflow.expense_total ?? 0);
     const netto = income - expense;
@@ -125,7 +128,7 @@ function CashflowCard({ cashflow }: { cashflow: Cashflow }) {
                         <span className="text-muted-foreground">
                             {(cashflow.period_start &&
                                 formatDate(cashflow.period_start)) ||
-                                'Mulai kapan saja'}
+                                t('cashflowStartAnytime')}
                             {cashflow.period_end
                                 ? ` – ${formatDate(cashflow.period_end)}`
                                 : ''}
@@ -133,10 +136,10 @@ function CashflowCard({ cashflow }: { cashflow: Cashflow }) {
                     </div>
                     <div className="flex items-center justify-between text-xs">
                         <span className="text-emerald-600 dark:text-emerald-400">
-                            Masuk {formatMoney(income)}
+                            {t('cashflowIncome')} {formatMoney(income)}
                         </span>
                         <span className="text-destructive">
-                            Keluar {formatMoney(expense)}
+                            {t('cashflowExpense')} {formatMoney(expense)}
                         </span>
                     </div>
 
@@ -144,7 +147,7 @@ function CashflowCard({ cashflow }: { cashflow: Cashflow }) {
                         <div className="flex items-center gap-1.5 rounded-lg bg-primary/5 px-2.5 py-1.5 text-[11px] text-muted-foreground">
                             <CalendarClock className="size-3.5 shrink-0 text-primary" />
                             <span>
-                                Periode berakhir{' '}
+                                {t('cashflowPeriodEnd')}{' '}
                                 <span className="font-semibold text-foreground">
                                     {formatDate(cashflow.period_end)}
                                 </span>
@@ -164,6 +167,7 @@ function CashflowFormDialog({
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }) {
+    const { t } = useI18n();
     const { data, setData, errors, processing, post, reset } =
         useForm<CashflowForm>({
             title: '',
@@ -185,22 +189,24 @@ function CashflowFormDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Kas Baru</DialogTitle>
+                    <DialogTitle>{t('cashflowNew')}</DialogTitle>
                     <DialogDescription>
-                        Judul biasanya nama bulan atau periode.
+                        {t('cashflowNewTitleHelp')}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-3 py-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="cashflow-title">Judul kas</Label>
+                        <Label htmlFor="cashflow-title">
+                            {t('cashflowTitlePlaceholder')}
+                        </Label>
                         <Input
                             id="cashflow-title"
                             value={data.title}
                             onChange={(event) =>
                                 setData('title', event.target.value)
                             }
-                            placeholder="Contoh: Bulan Agustus"
+                            placeholder={t('cashflowTitleExample')}
                         />
                         {errors.title && (
                             <p className="text-sm text-destructive">
@@ -212,7 +218,7 @@ function CashflowFormDialog({
                     <div className="grid grid-cols-2 gap-3">
                         <div className="grid gap-2">
                             <Label htmlFor="cashflow-start">
-                                Mulai periode
+                                {t('cashflowStartDate')}
                             </Label>
                             <Input
                                 id="cashflow-start"
@@ -225,7 +231,7 @@ function CashflowFormDialog({
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="cashflow-end">
-                                Akhir periode (opsional)
+                                {t('cashflowEndDate')}
                             </Label>
                             <Input
                                 id="cashflow-end"
@@ -244,16 +250,14 @@ function CashflowFormDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="cashflow-notes">
-                            Catatan (opsional)
-                        </Label>
+                        <Label htmlFor="cashflow-notes">{t('note')}</Label>
                         <Input
                             id="cashflow-notes"
                             value={data.notes}
                             onChange={(event) =>
                                 setData('notes', event.target.value)
                             }
-                            placeholder="Detail tambahan"
+                            placeholder={t('noteDetail')}
                         />
                     </div>
                 </div>
@@ -266,10 +270,10 @@ function CashflowFormDialog({
                             reset();
                         }}
                     >
-                        Batal
+                        {t('cancel')}
                     </Button>
                     <Button onClick={submit} disabled={processing}>
-                        Buat Kas
+                        {t('cashflowCreateButton')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

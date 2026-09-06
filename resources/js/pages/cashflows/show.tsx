@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatDate, formatMoney } from '@/lib/format';
+import { getT, useI18n } from '@/lib/i18n';
 import { toUrl } from '@/lib/utils';
 import {
     store as storeItem,
@@ -64,6 +65,7 @@ export default function CashflowsShow({ cashflow, items }: Props) {
     const netto = incomeTotal - expenseTotal;
 
     const [editing, setEditing] = useState<CashflowItem | null>(null);
+    const { t } = useI18n();
 
     return (
         <>
@@ -77,7 +79,7 @@ export default function CashflowsShow({ cashflow, items }: Props) {
                     <p className="text-sm text-muted-foreground">
                         {(cashflow.period_start &&
                             formatDate(cashflow.period_start)) ||
-                            'Mulai kapan saja'}
+                            t('cashflowStartAnytime')}
                         {cashflow.period_end
                             ? ` – ${formatDate(cashflow.period_end)}`
                             : ''}
@@ -88,7 +90,9 @@ export default function CashflowsShow({ cashflow, items }: Props) {
                 <div className="grid gap-3 sm:grid-cols-3">
                     <Card className="h-full">
                         <CardHeader className="pb-2">
-                            <CardDescription>Pemasukan</CardDescription>
+                            <CardDescription>
+                                {t('cashflowIncomeLabel')}
+                            </CardDescription>
                             <CardTitle className="text-2xl text-emerald-600 dark:text-emerald-400">
                                 +{formatMoney(incomeTotal)}
                             </CardTitle>
@@ -96,7 +100,9 @@ export default function CashflowsShow({ cashflow, items }: Props) {
                     </Card>
                     <Card className="h-full">
                         <CardHeader className="pb-2">
-                            <CardDescription>Pengeluaran</CardDescription>
+                            <CardDescription>
+                                {t('cashflowExpenseLabel')}
+                            </CardDescription>
                             <CardTitle className="text-2xl text-destructive">
                                 −{formatMoney(expenseTotal)}
                             </CardTitle>
@@ -104,7 +110,9 @@ export default function CashflowsShow({ cashflow, items }: Props) {
                     </Card>
                     <Card className="h-full">
                         <CardHeader className="pb-2">
-                            <CardDescription>Netto</CardDescription>
+                            <CardDescription>
+                                {t('cashflowNetto')}
+                            </CardDescription>
                             <CardTitle className="text-2xl">
                                 {formatMoney(netto)}
                             </CardTitle>
@@ -144,6 +152,7 @@ function IncomeSection({
     items: CashflowItem[];
     onEdit: (item: CashflowItem) => void;
 }) {
+    const { t } = useI18n();
     const { data, setData, errors, processing, post, reset } = useForm<AddForm>(
         {
             type: 'income',
@@ -164,7 +173,9 @@ function IncomeSection({
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-base">Pemasukan</CardTitle>
+                <CardTitle className="text-base">
+                    {t('cashflowIncomeLabel')}
+                </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
                 {errors.type && (
@@ -172,14 +183,14 @@ function IncomeSection({
                 )}
                 <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
                     <div className="grid gap-2">
-                        <Label htmlFor="income-name">Nama</Label>
+                        <Label htmlFor="income-name">{t('name')}</Label>
                         <Input
                             id="income-name"
                             value={data.name}
                             onChange={(event) =>
                                 setData('name', event.target.value)
                             }
-                            placeholder="Contoh: Gaji"
+                            placeholder={t('cashflowItemNameExample')}
                         />
                         {errors.name && (
                             <p className="text-sm text-destructive">
@@ -188,7 +199,9 @@ function IncomeSection({
                         )}
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="income-amount">Nominal</Label>
+                        <Label htmlFor="income-amount">
+                            {t('cashflowItemAmount')}
+                        </Label>
                         <Input
                             id="income-amount"
                             type="number"
@@ -212,7 +225,7 @@ function IncomeSection({
                         className="self-end"
                     >
                         <Plus className="size-4" />
-                        Tambah
+                        {t('add')}
                     </Button>
                 </div>
 
@@ -236,6 +249,7 @@ function ExpenseSection({
     items: CashflowItem[];
     onEdit: (item: CashflowItem) => void;
 }) {
+    const { t } = useI18n();
     const { data, setData, errors, processing, post, reset } = useForm<AddForm>(
         {
             type: 'expense',
@@ -262,7 +276,9 @@ function ExpenseSection({
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-base">Pengeluaran</CardTitle>
+                <CardTitle className="text-base">
+                    {t('cashflowExpenseLabel')}
+                </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
                 {errors.type && (
@@ -270,14 +286,14 @@ function ExpenseSection({
                 )}
                 <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto_auto]">
                     <div className="grid gap-2">
-                        <Label htmlFor="expense-name">Nama</Label>
+                        <Label htmlFor="expense-name">{t('name')}</Label>
                         <Input
                             id="expense-name"
                             value={data.name}
                             onChange={(event) =>
                                 setData('name', event.target.value)
                             }
-                            placeholder="Contoh: Bensin"
+                            placeholder={t('cashflowExpenseNameExample')}
                         />
                         {errors.name && (
                             <p className="text-sm text-destructive">
@@ -286,7 +302,9 @@ function ExpenseSection({
                         )}
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="expense-amount">Nominal</Label>
+                        <Label htmlFor="expense-amount">
+                            {t('cashflowItemAmount')}
+                        </Label>
                         <Input
                             id="expense-amount"
                             type="number"
@@ -305,7 +323,9 @@ function ExpenseSection({
                         )}
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="expense-quantity">Jumlah</Label>
+                        <Label htmlFor="expense-quantity">
+                            {t('cashflowItemQuantity')}
+                        </Label>
                         <div className="flex items-center gap-1">
                             <Button
                                 type="button"
@@ -349,7 +369,7 @@ function ExpenseSection({
                         className="self-end"
                     >
                         <Plus className="size-4" />
-                        Tambah
+                        {t('add')}
                     </Button>
                 </div>
 
@@ -370,6 +390,7 @@ function ItemList({
     sign: string;
     showQuantity: boolean;
 }) {
+    const { t } = useI18n();
     const [pending, setPending] = useState<CashflowItem | null>(null);
     const [deleting, setDeleting] = useState(false);
 
@@ -392,7 +413,7 @@ function ItemList({
     if (items.length === 0) {
         return (
             <p className="py-2 text-sm text-muted-foreground">
-                Belum ada item. Tambahkan di atas.
+                {t('cashflowNoItems')}
             </p>
         );
     }
@@ -439,9 +460,11 @@ function ItemList({
             <ConfirmDialog
                 open={pending !== null}
                 onOpenChange={(open) => !open && setPending(null)}
-                title="Hapus item"
+                title={t('cashflowDeleteItem')}
                 description={
-                    pending ? `Hapus item "${pending.name}"?` : undefined
+                    pending
+                        ? `${t('cashflowDeleteItemConfirm')} "${pending.name}"`
+                        : undefined
                 }
                 processing={deleting}
                 onConfirm={confirmDeleteItem}
@@ -457,6 +480,7 @@ function EditItemDialog({
     item: CashflowItem;
     onClose: () => void;
 }) {
+    const { t } = useI18n();
     const { data, setData, errors, processing, patch } = useForm<EditForm>({
         type: item.type,
         name: item.name,
@@ -476,12 +500,12 @@ function EditItemDialog({
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Edit Item</DialogTitle>
+                    <DialogTitle>{t('cashflowEditItem')}</DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-3 py-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="edit-name">Nama</Label>
+                        <Label htmlFor="edit-name">{t('name')}</Label>
                         <Input
                             id="edit-name"
                             value={data.name}
@@ -498,7 +522,9 @@ function EditItemDialog({
 
                     <div className="grid grid-cols-2 gap-3">
                         <div className="grid gap-2">
-                            <Label htmlFor="edit-amount">Nominal</Label>
+                            <Label htmlFor="edit-amount">
+                                {t('cashflowItemAmount')}
+                            </Label>
                             <Input
                                 id="edit-amount"
                                 type="number"
@@ -517,7 +543,9 @@ function EditItemDialog({
                         </div>
                         {item.type === 'expense' && (
                             <div className="grid gap-2">
-                                <Label htmlFor="edit-quantity">Jumlah</Label>
+                                <Label htmlFor="edit-quantity">
+                                    {t('cashflowItemQuantity')}
+                                </Label>
                                 <Input
                                     id="edit-quantity"
                                     type="number"
@@ -540,10 +568,10 @@ function EditItemDialog({
 
                 <DialogFooter>
                     <Button variant="outline" onClick={onClose}>
-                        Batal
+                        {t('cancel')}
                     </Button>
                     <Button onClick={submit} disabled={processing}>
-                        Simpan
+                        {t('save')}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -551,10 +579,12 @@ function EditItemDialog({
     );
 }
 
+const cashflowShowBreadcrumb = getT();
+
 CashflowsShow.layout = {
     breadcrumbs: [
         {
-            title: 'Kas',
+            title: cashflowShowBreadcrumb('pageCashflowIndex'),
             href: toUrl(index()),
         },
     ],

@@ -31,6 +31,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatDate, formatMoney, formatPercent } from '@/lib/format';
+import { getT, useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import { index } from '@/routes/savings-goals';
 import {
@@ -72,6 +73,7 @@ export default function SavingsShow({ goal, payments }: Props) {
         null,
     );
     const [deleting, setDeleting] = useState(false);
+    const { t } = useI18n();
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -146,14 +148,16 @@ export default function SavingsShow({ goal, payments }: Props) {
                         {goal.title}
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Pantau progress dan catat cicilanmu.
+                        {t('savingsDetailHelp')}
                     </p>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                     <Card className="h-full">
                         <CardHeader className="pb-2">
-                            <CardDescription>Target</CardDescription>
+                            <CardDescription>
+                                {t('savingsTargetLabel')}
+                            </CardDescription>
                             <CardTitle className="text-3xl">
                                 {formatMoney(target)}
                             </CardTitle>
@@ -166,13 +170,15 @@ export default function SavingsShow({ goal, payments }: Props) {
 
                     <Card className="h-full">
                         <CardHeader className="pb-2">
-                            <CardDescription>Terkumpul</CardDescription>
+                            <CardDescription>
+                                {t('savingsCollectedLabel')}
+                            </CardDescription>
                             <CardTitle className="text-3xl">
                                 {formatMoney(paid)}
                             </CardTitle>
                             {reached ? (
                                 <CardDescription className="font-medium text-emerald-600">
-                                    Target tercapai, bagus!
+                                    {t('savingsGoalAchieved')}
                                 </CardDescription>
                             ) : (
                                 <CardDescription
@@ -183,8 +189,8 @@ export default function SavingsShow({ goal, payments }: Props) {
                                     }
                                 >
                                     {missed
-                                        ? `Terlewat — kurang ${formatMoney(remaining)}`
-                                        : `Kurang ${formatMoney(remaining)} lagi`}
+                                        ? `${t('savingsOverdueMsg')} ${formatMoney(remaining)}`
+                                        : `${t('savingsRemainingMsg')} ${formatMoney(remaining)}`}
                                 </CardDescription>
                             )}
                         </CardHeader>
@@ -219,19 +225,19 @@ export default function SavingsShow({ goal, payments }: Props) {
                             <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-primary/5 px-3 py-2.5 text-xs text-muted-foreground">
                                 <CalendarClock className="size-4 shrink-0 text-primary" />
                                 <span>
-                                    Butuh cicilan{' '}
+                                    {t('savingsNeedInstallment')}{' '}
                                     <span className="font-semibold text-foreground">
                                         ±{formatMoney(perDay)}
                                     </span>
-                                    /hari ·{' '}
+                                    {t('savingsPerDay')} ·{' '}
                                     <span className="font-semibold text-foreground">
                                         ±{formatMoney(perDay * 7)}
                                     </span>
-                                    /minggu ·{' '}
+                                    {t('savingsPerWeek')} ·{' '}
                                     <span className="font-semibold text-foreground">
                                         ±{formatMoney(perDay * 30)}
                                     </span>
-                                    /bulan sampai{' '}
+                                    {t('savingsMonthsUntil')}{' '}
                                     {goal.end_date && formatDate(goal.end_date)}
                                 </span>
                             </div>
@@ -243,7 +249,7 @@ export default function SavingsShow({ goal, payments }: Props) {
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">
-                                Progress Cicilan
+                                {t('savingsProgressTitle')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -253,7 +259,7 @@ export default function SavingsShow({ goal, payments }: Props) {
                                         labels: chartLabels,
                                         datasets: [
                                             {
-                                                label: 'Total terkumpul',
+                                                label: t('savingsTotalSaved'),
                                                 data: chartData,
                                                 borderColor:
                                                     'hsl(var(--primary))',
@@ -294,12 +300,14 @@ export default function SavingsShow({ goal, payments }: Props) {
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">
-                            Catat Cicilan
+                            {t('savingsRecordInstallment')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-3 sm:grid-cols-[1fr_auto_1fr_auto]">
                         <div className="grid gap-2">
-                            <Label htmlFor="payment-amount">Nominal</Label>
+                            <Label htmlFor="payment-amount">
+                                {t('amount')}
+                            </Label>
                             <Input
                                 id="payment-amount"
                                 type="number"
@@ -318,7 +326,7 @@ export default function SavingsShow({ goal, payments }: Props) {
                             )}
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="payment-date">Tanggal</Label>
+                            <Label htmlFor="payment-date">{t('date')}</Label>
                             <Input
                                 id="payment-date"
                                 type="date"
@@ -334,16 +342,14 @@ export default function SavingsShow({ goal, payments }: Props) {
                             )}
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="payment-note">
-                                Catatan (opsional)
-                            </Label>
+                            <Label htmlFor="payment-note">{t('note')}</Label>
                             <Input
                                 id="payment-note"
                                 value={data.note}
                                 onChange={(event) =>
                                     setData('note', event.target.value)
                                 }
-                                placeholder="Cicilan pertama"
+                                placeholder={t('savingsInstallmentFirst')}
                             />
                         </div>
                         <Button
@@ -352,7 +358,7 @@ export default function SavingsShow({ goal, payments }: Props) {
                             className="self-end"
                         >
                             <Plus className="size-4" />
-                            Catat
+                            {t('savingsRecord')}
                         </Button>
                     </CardContent>
                 </Card>
@@ -361,7 +367,7 @@ export default function SavingsShow({ goal, payments }: Props) {
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">
-                                Riwayat Cicilan
+                                {t('savingsHistoryTitle')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="grid gap-2">
@@ -413,10 +419,10 @@ export default function SavingsShow({ goal, payments }: Props) {
             <ConfirmDialog
                 open={pendingDelete !== null}
                 onOpenChange={(open) => !open && setPendingDelete(null)}
-                title="Hapus cicilan"
+                title={t('savingsDeleteInstallment')}
                 description={
                     pendingDelete
-                        ? `Hapus cicilan ${formatMoney(pendingDelete.amount)}?`
+                        ? `${t('savingsDeleteInstallmentConfirm')} ${formatMoney(pendingDelete.amount)}`
                         : undefined
                 }
                 processing={deleting}
@@ -438,6 +444,7 @@ function EditPaymentDialog({
         paid_at: payment.paid_at,
         note: payment.note ?? '',
     });
+    const { t } = useI18n();
 
     function submit(): void {
         patch(toUrl(updatePayment({ savings_payment: payment.id })), {
@@ -449,12 +456,12 @@ function EditPaymentDialog({
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Edit Cicilan</DialogTitle>
+                    <DialogTitle>{t('savingsEditInstallment')}</DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-3 py-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="edit-amount">Nominal</Label>
+                        <Label htmlFor="edit-amount">{t('amount')}</Label>
                         <Input
                             id="edit-amount"
                             type="number"
@@ -473,7 +480,7 @@ function EditPaymentDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="edit-date">Tanggal</Label>
+                        <Label htmlFor="edit-date">{t('date')}</Label>
                         <Input
                             id="edit-date"
                             type="date"
@@ -490,7 +497,7 @@ function EditPaymentDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="edit-note">Catatan (opsional)</Label>
+                        <Label htmlFor="edit-note">{t('note')}</Label>
                         <Input
                             id="edit-note"
                             value={data.note}
@@ -508,10 +515,10 @@ function EditPaymentDialog({
 
                 <DialogFooter>
                     <Button variant="outline" onClick={onClose}>
-                        Batal
+                        {t('cancel')}
                     </Button>
                     <Button onClick={submit} disabled={processing}>
-                        Simpan
+                        {t('save')}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -519,10 +526,12 @@ function EditPaymentDialog({
     );
 }
 
+const savingsShowBreadcrumb = getT();
+
 SavingsShow.layout = {
     breadcrumbs: [
         {
-            title: 'Nabung',
+            title: savingsShowBreadcrumb('pageSavingsIndex'),
             href: toUrl(index()),
         },
     ],

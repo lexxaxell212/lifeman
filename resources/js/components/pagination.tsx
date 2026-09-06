@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import type { PaginationLink } from '@/types';
 
@@ -11,6 +12,8 @@ function decodeLabel(label: string): string {
 }
 
 export function Pagination({ links }: { links: PaginationLink[] }) {
+    const { t } = useI18n();
+
     if (links.length <= 3) {
         return null;
     }
@@ -26,7 +29,7 @@ export function Pagination({ links }: { links: PaginationLink[] }) {
                     href={prev.url}
                     preserveScroll
                     className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    title="Sebelumnya"
+                    title={t('paginationPrev')}
                 >
                     <ChevronLeft className="size-4" />
                 </Link>
@@ -65,7 +68,7 @@ export function Pagination({ links }: { links: PaginationLink[] }) {
                     href={next.url}
                     preserveScroll
                     className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    title="Berikutnya"
+                    title={t('paginationNext')}
                 >
                     <ChevronRight className="size-4" />
                 </Link>

@@ -14,6 +14,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { useI18n } from '@/lib/i18n';
 import { edit } from '@/routes/security';
 
 type Props = {
@@ -21,20 +22,21 @@ type Props = {
 };
 
 export default function Security(props: Props) {
+    const { t } = useI18n();
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
     return (
         <>
-            <Head title="Keamanan" />
+            <Head title={t('securityTitle')} />
 
-            <h1 className="sr-only">Pengaturan keamanan</h1>
+            <h1 className="sr-only">{t('securityDescription')}</h1>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <Heading
                     variant="small"
-                    title="Keamanan"
-                    description="Jaga akunmu tetap aman dengan password yang kuat"
+                    title={t('securityTitle')}
+                    description={t('securityDescription')}
                 />
 
                 <Card className="overflow-hidden rounded-2xl">
@@ -44,10 +46,10 @@ export default function Security(props: Props) {
                         </span>
                         <div>
                             <CardTitle className="text-base">
-                                Ubah password
+                                {t('securityChangePassword')}
                             </CardTitle>
                             <CardDescription>
-                                Gunakan password yang panjang dan unik
+                                {t('securityPasswordHelp')}
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -78,7 +80,7 @@ export default function Security(props: Props) {
                                 <>
                                     <div className="grid gap-2">
                                         <Label htmlFor="current_password">
-                                            Password saat ini
+                                            {t('securityCurrentPassword')}
                                         </Label>
 
                                         <PasswordInput
@@ -87,7 +89,9 @@ export default function Security(props: Props) {
                                             name="current_password"
                                             className="mt-1 block w-full rounded-xl"
                                             autoComplete="current-password"
-                                            placeholder="Password saat ini"
+                                            placeholder={t(
+                                                'securityCurrentPassword',
+                                            )}
                                         />
 
                                         <InputError
@@ -97,7 +101,7 @@ export default function Security(props: Props) {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="password">
-                                            Password baru
+                                            {t('securityNewPassword')}
                                         </Label>
 
                                         <PasswordInput
@@ -106,7 +110,9 @@ export default function Security(props: Props) {
                                             name="password"
                                             className="mt-1 block w-full rounded-xl"
                                             autoComplete="new-password"
-                                            placeholder="Password baru"
+                                            placeholder={t(
+                                                'securityNewPassword',
+                                            )}
                                             passwordrules={props.passwordRules}
                                         />
 
@@ -115,7 +121,7 @@ export default function Security(props: Props) {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="password_confirmation">
-                                            Konfirmasi password
+                                            {t('securityConfirmPassword')}
                                         </Label>
 
                                         <PasswordInput
@@ -123,7 +129,9 @@ export default function Security(props: Props) {
                                             name="password_confirmation"
                                             className="mt-1 block w-full rounded-xl"
                                             autoComplete="new-password"
-                                            placeholder="Ulangi password baru"
+                                            placeholder={t(
+                                                'securityConfirmPasswordHelp',
+                                            )}
                                             passwordrules={props.passwordRules}
                                         />
 
@@ -137,10 +145,7 @@ export default function Security(props: Props) {
                                     <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3">
                                         <ShieldCheck className="size-4 shrink-0 text-primary" />
                                         <p className="text-xs text-muted-foreground">
-                                            Tips: kombinasikan huruf besar,
-                                            angka, dan simbol, serta jangan
-                                            pakai password yang sama di aplikasi
-                                            lain.
+                                            {t('securityTips')}
                                         </p>
                                     </div>
 
@@ -150,7 +155,7 @@ export default function Security(props: Props) {
                                             className="rounded-xl bg-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5"
                                             data-test="update-password-button"
                                         >
-                                            Simpan password
+                                            {t('securitySavePassword')}
                                         </Button>
                                     </div>
                                 </>

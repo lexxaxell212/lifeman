@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatDate, formatMoney, formatPercent } from '@/lib/format';
+import { useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import { show, store, index } from '@/routes/savings-goals';
 import type { PaginatedData, SavingsGoal } from '@/types';
@@ -41,24 +42,25 @@ type GoalForm = {
 
 export default function SavingsIndex({ goals, filters }: Props) {
     const [open, setOpen] = useState(false);
+    const { t } = useI18n();
 
     return (
         <>
-            <Head title="Nabung" />
+            <Head title={t('pageSavingsIndex')} />
 
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">
-                            Ayo Nabung
+                            {t('savingsLetSave')}
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Target tabunganmu, pantau progress setiap cicilan.
+                            {t('savingsSubtitle')}
                         </p>
                     </div>
                     <Button onClick={() => setOpen(true)}>
                         <Plus className="size-4" />
-                        Target Baru
+                        {t('savingsNewTarget')}
                     </Button>
                 </div>
 
@@ -68,14 +70,20 @@ export default function SavingsIndex({ goals, filters }: Props) {
                     status={filters.status}
                     sort={filters.sort}
                     statusOptions={[
-                        { value: 'active', label: 'Berjalan' },
-                        { value: 'completed', label: 'Tercapai' },
+                        { value: 'active', label: t('savingsStatusRunning') },
+                        {
+                            value: 'completed',
+                            label: t('savingsStatusAchieved'),
+                        },
                     ]}
                     sortOptions={[
-                        { value: 'created_at', label: 'Dibuat' },
-                        { value: 'target_amount', label: 'Target' },
-                        { value: 'end_date', label: 'Batas waktu' },
-                        { value: 'title', label: 'Judul' },
+                        { value: 'created_at', label: t('savingsColCreated') },
+                        {
+                            value: 'target_amount',
+                            label: t('savingsColTarget'),
+                        },
+                        { value: 'end_date', label: t('savingsColDeadline') },
+                        { value: 'title', label: t('savingsColTitle') },
                     ]}
                 />
 
@@ -83,7 +91,7 @@ export default function SavingsIndex({ goals, filters }: Props) {
                     <>
                         {goals.data.length === 0 && (
                             <p className="col-span-full py-10 text-center text-sm text-muted-foreground">
-                                Belum ada target nabung yang dibuat.
+                                {t('savingsEmpty')}
                             </p>
                         )}
 
@@ -102,6 +110,7 @@ export default function SavingsIndex({ goals, filters }: Props) {
 }
 
 function GoalCard({ goal }: { goal: SavingsGoal }) {
+    const { t } = useI18n();
     const paid = Number(goal.paid_amount ?? 0);
     const target = Number(goal.target_amount);
     const percent = target > 0 ? (paid / target) * 100 : 0;
@@ -142,10 +151,10 @@ function GoalCard({ goal }: { goal: SavingsGoal }) {
                             )}
                         >
                             {reached
-                                ? 'Tercapai'
+                                ? t('savingsStatusAchieved')
                                 : missed
-                                  ? 'Terlewat'
-                                  : 'Berjalan'}
+                                  ? t('savingsStatusOverdue')
+                                  : t('savingsStatusRunning')}
                         </Badge>
                     </div>
                 </CardHeader>
@@ -185,33 +194,32 @@ function GoalCard({ goal }: { goal: SavingsGoal }) {
                         <div className="flex items-center gap-1.5 rounded-lg bg-primary/5 px-2.5 py-1.5 text-[11px] text-muted-foreground">
                             <CalendarClock className="size-3.5 shrink-0 text-primary" />
                             <span>
-                                Cicil{' '}
+                                {t('savingsCollect')}{' '}
                                 <span className="font-semibold text-foreground">
                                     ±{formatMoney(perDay)}
                                 </span>
-                                /hari ·{' '}
+                                {t('savingsPerDay')} ·{' '}
                                 <span className="font-semibold text-foreground">
                                     ±{formatMoney(perDay * 7)}
                                 </span>
-                                /minggu ·{' '}
+                                {t('savingsPerWeek')} ·{' '}
                                 <span className="font-semibold text-foreground">
                                     ±{formatMoney(perDay * 30)}
                                 </span>
-                                /bulan
+                                {t('savingsPerMonth')}
                             </span>
                         </div>
                     )}
 
                     {!reached && missed && (
                         <p className="text-xs font-medium text-destructive">
-                            Target terlewat — kurang {formatMoney(remaining)}{' '}
-                            lagi
+                            {t('savingsOverdueMsg')} {formatMoney(remaining)}
                         </p>
                     )}
 
                     {!reached && !missed && perDay === 0 && (
                         <p className="text-xs text-muted-foreground">
-                            Kurang {formatMoney(remaining)} lagi
+                            {t('savingsRemainingMsg')} {formatMoney(remaining)}
                         </p>
                     )}
                 </CardContent>
@@ -235,6 +243,7 @@ function GoalFormDialog({
             end_date: '',
             notes: '',
         });
+    const { t } = useI18n();
 
     function submit(): void {
         post(toUrl(store()), {
@@ -249,22 +258,24 @@ function GoalFormDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Target Nabung Baru</DialogTitle>
+                    <DialogTitle>{t('savingsNewTitle')}</DialogTitle>
                     <DialogDescription>
-                        Judul target akan menjadi judul card progress.
+                        {t('savingsNewTitleHelp')}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-3 py-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="goal-title">Judul target</Label>
+                        <Label htmlFor="goal-title">
+                            {t('savingsTitlePlaceholder')}
+                        </Label>
                         <Input
                             id="goal-title"
                             value={data.title}
                             onChange={(event) =>
                                 setData('title', event.target.value)
                             }
-                            placeholder="Contoh: Liburan Bali"
+                            placeholder={t('savingsTitleExample')}
                         />
                         {errors.title && (
                             <p className="text-sm text-destructive">
@@ -274,7 +285,9 @@ function GoalFormDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="goal-target">Target nominal</Label>
+                        <Label htmlFor="goal-target">
+                            {t('savingsNominalLabel')}
+                        </Label>
                         <Input
                             id="goal-target"
                             type="number"
@@ -295,7 +308,9 @@ function GoalFormDialog({
 
                     <div className="grid grid-cols-2 gap-3">
                         <div className="grid gap-2">
-                            <Label htmlFor="goal-start">Mulai</Label>
+                            <Label htmlFor="goal-start">
+                                {t('savingsStartDate')}
+                            </Label>
                             <Input
                                 id="goal-start"
                                 type="date"
@@ -307,7 +322,7 @@ function GoalFormDialog({
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="goal-end">
-                                Target selesai (opsional)
+                                {t('savingsEndDate')}
                             </Label>
                             <Input
                                 id="goal-end"
@@ -326,14 +341,14 @@ function GoalFormDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="goal-notes">Catatan (opsional)</Label>
+                        <Label htmlFor="goal-notes">{t('note')}</Label>
                         <Input
                             id="goal-notes"
                             value={data.notes}
                             onChange={(event) =>
                                 setData('notes', event.target.value)
                             }
-                            placeholder="Detail tambahan"
+                            placeholder={t('noteDetail')}
                         />
                     </div>
                 </div>
@@ -346,10 +361,10 @@ function GoalFormDialog({
                             reset();
                         }}
                     >
-                        Batal
+                        {t('cancel')}
                     </Button>
                     <Button onClick={submit} disabled={processing}>
-                        Buat Target
+                        {t('savingsCreateButton')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

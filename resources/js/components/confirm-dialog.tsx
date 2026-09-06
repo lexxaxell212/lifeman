@@ -8,6 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { useI18n } from '@/lib/i18n';
 
 type ConfirmDialogProps = {
     open: boolean;
@@ -25,11 +26,13 @@ export function ConfirmDialog({
     onOpenChange,
     title,
     description,
-    confirmLabel = 'Hapus',
+    confirmLabel,
     destructive = true,
     processing = false,
     onConfirm,
 }: ConfirmDialogProps) {
+    const { t } = useI18n();
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
@@ -45,7 +48,7 @@ export function ConfirmDialog({
                         onClick={() => onOpenChange(false)}
                         disabled={processing}
                     >
-                        Batal
+                        {t('cancel')}
                     </Button>
                     <Button
                         variant={destructive ? 'destructive' : 'default'}
@@ -55,7 +58,7 @@ export function ConfirmDialog({
                         {processing && (
                             <Loader2 className="size-4 animate-spin" />
                         )}
-                        {confirmLabel}
+                        {confirmLabel ?? t('delete')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

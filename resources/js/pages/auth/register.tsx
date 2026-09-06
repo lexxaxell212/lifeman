@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { getT, useI18n } from '@/lib/i18n';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
@@ -14,9 +15,11 @@ type Props = {
 };
 
 export default function Register({ passwordRules }: Props) {
+    const { t } = useI18n();
+
     return (
         <>
-            <Head title="Register" />
+            <Head title={t('authRegisterTitle')} />
             <Form
                 {...store.form()}
                 resetOnSuccess={['password', 'password_confirmation']}
@@ -26,7 +29,7 @@ export default function Register({ passwordRules }: Props) {
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">{t('authName')}</Label>
                             <Input
                                 id="name"
                                 type="text"
@@ -41,7 +44,7 @@ export default function Register({ passwordRules }: Props) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">{t('authEmail')}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -55,14 +58,16 @@ export default function Register({ passwordRules }: Props) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password">
+                                {t('authPassword')}
+                            </Label>
                             <PasswordInput
                                 id="password"
                                 required
                                 tabIndex={3}
                                 autoComplete="new-password"
                                 name="password"
-                                placeholder="Password"
+                                placeholder={t('authPassword')}
                                 passwordrules={passwordRules}
                             />
                             <InputError message={errors.password} />
@@ -70,7 +75,7 @@ export default function Register({ passwordRules }: Props) {
 
                         <div className="grid gap-2">
                             <Label htmlFor="password_confirmation">
-                                Confirm password
+                                {t('authConfirmPassword')}
                             </Label>
                             <PasswordInput
                                 id="password_confirmation"
@@ -78,7 +83,7 @@ export default function Register({ passwordRules }: Props) {
                                 tabIndex={4}
                                 autoComplete="new-password"
                                 name="password_confirmation"
-                                placeholder="Confirm password"
+                                placeholder={t('authConfirmPassword')}
                                 passwordrules={passwordRules}
                             />
                             <InputError
@@ -93,7 +98,7 @@ export default function Register({ passwordRules }: Props) {
                             data-test="register-user-button"
                         >
                             {processing && <Spinner />}
-                            Create account
+                            {t('authRegister')}
                         </Button>
 
                         <p className="text-center text-sm text-muted-foreground">
@@ -109,7 +114,9 @@ export default function Register({ passwordRules }: Props) {
     );
 }
 
+const authRegister = getT();
+
 Register.layout = {
-    title: 'Create an account',
+    title: authRegister('authRegisterTitle'),
     description: 'Enter your details below to create your account',
 };

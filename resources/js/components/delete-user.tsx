@@ -15,9 +15,11 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { useI18n } from '@/lib/i18n';
 
 export default function DeleteUser({ compact = false }: { compact?: boolean }) {
     const passwordInput = useRef<HTMLInputElement>(null);
+    const { t } = useI18n();
 
     const trigger = (
         <Dialog>
@@ -27,15 +29,12 @@ export default function DeleteUser({ compact = false }: { compact?: boolean }) {
                     className="w-full rounded-xl"
                     data-test="delete-user-button"
                 >
-                    Hapus akun
+                    {t('profileDeleteAccount')}
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogTitle>Yakin ingin menghapus akunmu?</DialogTitle>
-                <DialogDescription>
-                    Semua data dan resource akun akan dihapus permanen. Masukkan
-                    password untuk mengonfirmasi.
-                </DialogDescription>
+                <DialogTitle>{t('profileDeleteConfirm')}</DialogTitle>
+                <DialogDescription>{t('profileDeleteHelp')}</DialogDescription>
 
                 <Form
                     {...ProfileController.destroy.form()}
@@ -70,7 +69,7 @@ export default function DeleteUser({ compact = false }: { compact?: boolean }) {
                                         variant="secondary"
                                         onClick={() => resetAndClearErrors()}
                                     >
-                                        Batal
+                                        {t('cancel')}
                                     </Button>
                                 </DialogClose>
 
@@ -83,7 +82,7 @@ export default function DeleteUser({ compact = false }: { compact?: boolean }) {
                                         type="submit"
                                         data-test="confirm-delete-user-button"
                                     >
-                                        Hapus akun
+                                        {t('profileDeleteAccount')}
                                     </button>
                                 </Button>
                             </DialogFooter>

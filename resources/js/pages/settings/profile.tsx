@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
@@ -41,6 +42,7 @@ export default function Profile({
     mustVerifyEmail: boolean;
     status?: string;
 }) {
+    const { t } = useI18n();
     const { auth } = usePage<PageProps>().props;
     const verified = auth.user.email_verified_at !== null;
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -48,15 +50,15 @@ export default function Profile({
 
     return (
         <>
-            <Head title="Profil" />
+            <Head title={t('profileTitle')} />
 
-            <h1 className="sr-only">Pengaturan profil</h1>
+            <h1 className="sr-only">{t('profileDescription')}</h1>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <Heading
                     variant="small"
-                    title="Profil"
-                    description="Kelola nama dan alamat emailmu"
+                    title={t('profileTitle')}
+                    description={t('profileDescription')}
                 />
 
                 <Card className="overflow-hidden rounded-2xl">
@@ -65,9 +67,11 @@ export default function Profile({
                             <User className="size-4" />
                         </span>
                         <div>
-                            <CardTitle className="text-base">Nama</CardTitle>
+                            <CardTitle className="text-base">
+                                {t('profileNameLabel')}
+                            </CardTitle>
                             <CardDescription>
-                                Nama yang tampil di aplikasi
+                                {t('profileNameHelp')}
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -82,7 +86,9 @@ export default function Profile({
                             {({ processing, errors }) => (
                                 <>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="name">Nama</Label>
+                                        <Label htmlFor="name">
+                                            {t('profileNameLabel')}
+                                        </Label>
                                         <Input
                                             id="name"
                                             className="mt-1 block w-full rounded-xl"
@@ -90,7 +96,9 @@ export default function Profile({
                                             name="name"
                                             required
                                             autoComplete="name"
-                                            placeholder="Nama lengkap"
+                                            placeholder={t(
+                                                'profileNamePlaceholder',
+                                            )}
                                         />
                                         <InputError
                                             className="mt-2"
@@ -103,7 +111,7 @@ export default function Profile({
                                         className="rounded-xl bg-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5"
                                         data-test="update-profile-button"
                                     >
-                                        Simpan
+                                        {t('save')}
                                     </Button>
                                 </>
                             )}
@@ -118,10 +126,10 @@ export default function Profile({
                         </span>
                         <div>
                             <CardTitle className="text-base">
-                                Alamat email
+                                {t('profileEmailLabel')}
                             </CardTitle>
                             <CardDescription>
-                                Email tidak dapat diubah setelah terdaftar
+                                {t('profileEmailHelp')}
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -135,7 +143,7 @@ export default function Profile({
                                     'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
                                     verified
                                         ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+                                        : 'bg-brand-500/10 text-brand-600 dark:text-brand-400',
                                 )}
                             >
                                 {verified ? (
@@ -144,17 +152,15 @@ export default function Profile({
                                     <ShieldAlert className="size-3.5" />
                                 )}
                                 {verified
-                                    ? 'Terverifikasi'
-                                    : 'Belum terverifikasi'}
+                                    ? t('profileVerified')
+                                    : t('profileUnverified')}
                             </span>
                         </div>
 
                         {mustVerifyEmail && !verified && (
-                            <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-sm">
+                            <div className="rounded-xl border border-brand-500/30 bg-brand-500/5 p-3 text-sm">
                                 <p className="text-muted-foreground">
-                                    Email kamu belum diverifikasi. Kirim ulang
-                                    tautan verifikasi untuk mengaktifkan semua
-                                    fitur.
+                                    {t('profileVerifyHelp')}
                                 </p>
                                 <Button
                                     asChild
@@ -167,13 +173,13 @@ export default function Profile({
                                         as="button"
                                         className="font-medium"
                                     >
-                                        Kirim ulang verifikasi
+                                        {t('profileResendVerify')}
                                     </Link>
                                 </Button>
 
                                 {status === 'verification-link-sent' && (
                                     <p className="mt-2 text-sm font-medium text-green-600">
-                                        Tautan verifikasi baru telah dikirim.
+                                        {t('profileVerifySent')}
                                     </p>
                                 )}
                             </div>
@@ -188,10 +194,10 @@ export default function Profile({
                         </span>
                         <div>
                             <CardTitle className="text-base">
-                                Ubah password
+                                {t('profileChangePassword')}
                             </CardTitle>
                             <CardDescription>
-                                Gunakan password yang panjang dan unik
+                                {t('profilePasswordHelp')}
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -222,7 +228,7 @@ export default function Profile({
                                 <>
                                     <div className="grid gap-2">
                                         <Label htmlFor="current_password">
-                                            Password saat ini
+                                            {t('profileCurrentPassword')}
                                         </Label>
 
                                         <PasswordInput
@@ -231,7 +237,9 @@ export default function Profile({
                                             name="current_password"
                                             className="mt-1 block w-full rounded-xl"
                                             autoComplete="current-password"
-                                            placeholder="Password saat ini"
+                                            placeholder={t(
+                                                'profileCurrentPassword',
+                                            )}
                                         />
 
                                         <InputError
@@ -241,7 +249,7 @@ export default function Profile({
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="password">
-                                            Password baru
+                                            {t('profileNewPassword')}
                                         </Label>
 
                                         <PasswordInput
@@ -250,7 +258,9 @@ export default function Profile({
                                             name="password"
                                             className="mt-1 block w-full rounded-xl"
                                             autoComplete="new-password"
-                                            placeholder="Password baru"
+                                            placeholder={t(
+                                                'profileNewPassword',
+                                            )}
                                         />
 
                                         <InputError message={errors.password} />
@@ -258,7 +268,7 @@ export default function Profile({
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="password_confirmation">
-                                            Konfirmasi password
+                                            {t('profileConfirmPassword')}
                                         </Label>
 
                                         <PasswordInput
@@ -266,7 +276,9 @@ export default function Profile({
                                             name="password_confirmation"
                                             className="mt-1 block w-full rounded-xl"
                                             autoComplete="new-password"
-                                            placeholder="Ulangi password baru"
+                                            placeholder={t(
+                                                'profileConfirmPasswordHelp',
+                                            )}
                                         />
 
                                         <InputError
@@ -281,7 +293,7 @@ export default function Profile({
                                         className="rounded-xl bg-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5"
                                         data-test="update-password-button"
                                     >
-                                        Simpan password
+                                        {t('profileSavePassword')}
                                     </Button>
                                 </>
                             )}
@@ -295,9 +307,11 @@ export default function Profile({
                             <LogOut className="size-4" />
                         </span>
                         <div>
-                            <CardTitle className="text-base">Akun</CardTitle>
+                            <CardTitle className="text-base">
+                                {t('profileAccountSection')}
+                            </CardTitle>
                             <CardDescription>
-                                Keluar atau hapus akunmu
+                                {t('profileAccountHelp')}
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -313,7 +327,7 @@ export default function Profile({
                                 data-test="logout-button"
                             >
                                 <LogOut className="size-4" />
-                                Keluar
+                                {t('profileSignOut')}
                             </Link>
                         </Button>
                         <DeleteUser compact />

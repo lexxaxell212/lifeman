@@ -43,6 +43,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { formatDate, formatMoney, formatPercent } from '@/lib/format';
+import { getT, useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import {
     destroy as destroyTransaction,
@@ -69,32 +70,10 @@ ChartJS.register(
     Filler,
 );
 
-const typeLabels: Record<LedgerRow['type'], string> = {
-    initial_capital: 'Modal awal',
-    daily_modal: 'Modal harian',
-    income: 'Pendapatan',
-    expense_small: 'Pengeluaran kecil',
-    expense_big: 'Pengeluaran besar',
-    opening_balance: 'Saldo awal kas',
-};
-
-const categoryLabels: Record<string, string> = {
-    raw_material: 'Bahan baku',
-    operational: 'Operasional',
-    marketing: 'Marketing',
-    pre_operational: 'Modal pra-operasional',
-};
-
 const formulaLabels: Record<string, string> = {
     fb_a: 'F&B Opsi A',
     fb_b: 'F&B Opsi B',
     custom: 'Custom',
-};
-
-const rekapLabels: Record<string, string> = {
-    weekly: 'Mingguan',
-    monthly: 'Bulanan',
-    yearly: 'Tahunan',
 };
 
 type Props = {
@@ -161,6 +140,7 @@ export default function BusinessesShow({
     lr_chart,
     kas_opened_at,
 }: Props) {
+    const { t } = useI18n();
     const today = new Date().toISOString().slice(0, 10);
     const [filterDate, setFilterDate] = useState<string | null>(null);
     const [editingCapital, setEditingCapital] = useState(false);
@@ -168,6 +148,12 @@ export default function BusinessesShow({
     const [deleting, setDeleting] = useState(false);
     const [closeOpen, setCloseOpen] = useState(false);
     const [closing, setClosing] = useState(false);
+
+    const rekapLabels: Record<string, string> = {
+        weekly: t('businessPeriodWeek'),
+        monthly: t('businessPeriodMonth'),
+        yearly: t('businessPeriodYear'),
+    };
 
     const initialCapital = ledger.rows.find(
         (row) => row.type === 'initial_capital',
@@ -258,7 +244,7 @@ export default function BusinessesShow({
                         className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
                     >
                         <ArrowLeft className="size-4" />
-                        Manajemen Bisnis
+                        {t('businessShowManagement')}
                     </Link>
                     <div className="flex flex-wrap items-center gap-2">
                         <h1 className="text-2xl font-bold tracking-tight">
@@ -267,14 +253,16 @@ export default function BusinessesShow({
                     </div>
                     <div className="mt-2 flex flex-wrap gap-1.5">
                         <Badge variant="secondary">
-                            Rekap {rekapLabels[business.rekap_period]}
+                            {t('businessShowRecap')}{' '}
+                            {rekapLabels[business.rekap_period]}
                         </Badge>
                         <Badge variant="secondary">
                             {formulaLabels[business.formula_type ?? ''] ??
-                                'Rumus'}
+                                t('businessShowFormula')}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                            Mulai {formatDate(business.period_start)} · Arus kas{' '}
+                            {t('businessShowRecapMeta')}{' '}
+                            {formatDate(business.period_start)} · Arus kas{' '}
                             {formatMoney(lastBalance)}
                         </span>
                     </div>
@@ -289,7 +277,9 @@ export default function BusinessesShow({
                     />
                     <Card className="h-full">
                         <CardHeader className="pb-2">
-                            <CardDescription>Rumus Bisnis</CardDescription>
+                            <CardDescription>
+                                {t('businessFormulaSection')}
+                            </CardDescription>
                             <CardTitle className="text-base">
                                 {
                                     formulaLabels[
@@ -298,9 +288,13 @@ export default function BusinessesShow({
                                 }
                             </CardTitle>
                             <CardDescription className="text-xs">
-                                Bahan baku {business.formula.raw_material}% ·
-                                Operasional {business.formula.operational}% ·
-                                Marketing {business.formula.marketing}% · Laba{' '}
+                                {t('businessShowRawMaterials')}{' '}
+                                {business.formula.raw_material}% ·{' '}
+                                {t('businessShowOperations')}{' '}
+                                {business.formula.operational}% ·{' '}
+                                {t('businessShowMarketing')}{' '}
+                                {business.formula.marketing}% ·{' '}
+                                {t('businessFormulaProfitLabel')}{' '}
                                 {business.formula.profit}%
                             </CardDescription>
                         </CardHeader>
@@ -310,11 +304,10 @@ export default function BusinessesShow({
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">
-                            Catat Harian
+                            {t('businessShowRecordDaily')}
                         </CardTitle>
                         <CardDescription>
-                            Isi modal harian, pendapatan, dan pengeluaran
-                            kecilmu hari ini.
+                            {t('businessShowRecordDailyHelp')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-3">
@@ -327,10 +320,10 @@ export default function BusinessesShow({
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">
-                            Pengeluaran Besar
+                            {t('businessShowBigExpenses')}
                         </CardTitle>
                         <CardDescription>
-                            Belanja material, sewa, atau biaya lain kapan saja.
+                            {t('businessShowBigExpensesHelp')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -340,10 +333,11 @@ export default function BusinessesShow({
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">Kas Bisnis</CardTitle>
+                        <CardTitle className="text-base">
+                            {t('businessShowCashLedger')}
+                        </CardTitle>
                         <CardDescription>
-                            Buku besar berjalan — hanya bisa dihapus, tidak bisa
-                            diedit.
+                            {t('businessShowCashLedgerHelp')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-3">
@@ -368,7 +362,7 @@ export default function BusinessesShow({
                                         )}
                                     >
                                         {day.date === today
-                                            ? 'Hari ini'
+                                            ? t('businessShowToday')
                                             : formatDate(day.date)}
                                     </button>
                                 ))}
@@ -398,18 +392,18 @@ export default function BusinessesShow({
                                             <div className="flex flex-wrap items-baseline justify-between gap-1 pb-1">
                                                 <p className="text-xs font-semibold">
                                                     {date === today
-                                                        ? 'Hari ini'
+                                                        ? t('businessShowToday')
                                                         : formatDate(date)}
                                                 </p>
                                                 {totals && (
                                                     <p className="text-xs text-muted-foreground">
-                                                        Masuk{' '}
+                                                        {t('cashflowIncome')}{' '}
                                                         <span className="font-semibold text-emerald-600">
                                                             {formatMoney(
                                                                 totals.income,
                                                             )}
                                                         </span>{' '}
-                                                        · Keluar{' '}
+                                                        · {t('cashflowExpense')}{' '}
                                                         <span className="font-semibold text-destructive">
                                                             {formatMoney(
                                                                 totals.expense,
@@ -426,9 +420,9 @@ export default function BusinessesShow({
                                                             <div className="flex items-center gap-2 py-2">
                                                                 <div className="h-px flex-1 border-t border-dashed" />
                                                                 <span className="text-[11px] font-medium text-muted-foreground">
-                                                                    Kas baru
-                                                                    dibuka ·
-                                                                    saldo awal{' '}
+                                                                    {t(
+                                                                        'businessShowCashNew',
+                                                                    )}{' '}
                                                                     {formatMoney(
                                                                         row.income,
                                                                     )}
@@ -456,7 +450,7 @@ export default function BusinessesShow({
                         <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3">
                             <div>
                                 <p className="text-xs text-muted-foreground">
-                                    Saldo akhir kas
+                                    {t('businessShowClosingBalance')}
                                 </p>
                                 <p
                                     className={cn(
@@ -468,7 +462,8 @@ export default function BusinessesShow({
                                 </p>
                                 {kas_opened_at && (
                                     <p className="text-xs text-muted-foreground">
-                                        Kas dibuka {formatDate(kas_opened_at)}
+                                        {t('businessShowCashOpened')}{' '}
+                                        {formatDate(kas_opened_at)}
                                     </p>
                                 )}
                             </div>
@@ -478,7 +473,7 @@ export default function BusinessesShow({
                                 disabled={rows.length === 0}
                             >
                                 <Lock className="size-4" />
-                                Tutup Transaksi
+                                {t('businessShowCloseTransaction')}
                             </Button>
                         </div>
                     </CardContent>
@@ -488,7 +483,7 @@ export default function BusinessesShow({
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">
-                                Arus Kas
+                                {t('navCashflow')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -505,7 +500,7 @@ export default function BusinessesShow({
                                         ),
                                         datasets: [
                                             {
-                                                label: 'Kas',
+                                                label: t('navCashflow'),
                                                 data: days.map(
                                                     (day) => day.balance,
                                                 ),
@@ -560,10 +555,10 @@ export default function BusinessesShow({
             <ConfirmDialog
                 open={pendingDelete !== null}
                 onOpenChange={(open) => !open && setPendingDelete(null)}
-                title="Hapus transaksi"
+                title={t('businessShowDeleteTransaction')}
                 description={
                     pendingDelete
-                        ? `Hapus "${pendingDelete.name}" ${formatMoney(Math.max(pendingDelete.income, pendingDelete.expense))}?`
+                        ? `${t('delete')} "${pendingDelete.name}" ${formatMoney(Math.max(pendingDelete.income, pendingDelete.expense))}?`
                         : undefined
                 }
                 processing={deleting}
@@ -573,9 +568,9 @@ export default function BusinessesShow({
             <ConfirmDialog
                 open={closeOpen}
                 onOpenChange={setCloseOpen}
-                title="Tutup Transaksi"
-                description={`Kas akan ditutup dan kas baru dibuka dengan saldo awal ${formatMoney(lastBalance)}. Data kas sebelumnya tetap tersimpan.`}
-                confirmLabel="Tutup Kas"
+                title={t('businessShowCloseCashflow')}
+                description={`${t('businessShowCloseCashflowHelp')} ${formatMoney(lastBalance)}. Data kas sebelumnya tetap tersimpan.`}
+                confirmLabel={t('businessShowCloseCashflowButton')}
                 destructive={false}
                 processing={closing}
                 onConfirm={closeKas}
@@ -595,6 +590,7 @@ function InitialCapitalCard({
     editing: boolean;
     setEditing: (value: boolean) => void;
 }) {
+    const { t } = useI18n();
     const createForm = useForm<AmountForm>({
         type: 'initial_capital',
         date: new Date().toISOString().slice(0, 10),
@@ -640,7 +636,9 @@ function InitialCapitalCard({
     return (
         <Card className="h-full">
             <CardHeader className="pb-2">
-                <CardDescription>Modal Awal</CardDescription>
+                <CardDescription>
+                    {t('businessShowCapitalInitial')}
+                </CardDescription>
                 <div className="flex items-center gap-2">
                     <CardTitle className="text-3xl">
                         {capital ? formatMoney(capital.income) : '—'}
@@ -657,15 +655,17 @@ function InitialCapitalCard({
                 </div>
                 <CardDescription>
                     {capital
-                        ? 'Uang yang kamu tanamkan di awal bisnis'
-                        : 'Catat modal awal untuk mulai menghitung arus kas'}
+                        ? t('businessShowInitialCapitalHelp')
+                        : t('businessShowInitialCapitalHelp2')}
                 </CardDescription>
             </CardHeader>
             {!capital && (
                 <CardContent className="grid gap-3">
                     <div className="grid gap-2 sm:grid-cols-2">
                         <div className="grid gap-1.5">
-                            <Label htmlFor="capital-amount">Modal awal</Label>
+                            <Label htmlFor="capital-amount">
+                                {t('businessShowInitialCapital')}
+                            </Label>
                             <Input
                                 id="capital-amount"
                                 type="number"
@@ -683,7 +683,7 @@ function InitialCapitalCard({
                         </div>
                         <div className="grid gap-1.5">
                             <Label htmlFor="pre-operational-amount">
-                                Modal pra-operasional (opsional)
+                                {t('businessShowPreOpsCapital')} (opsional)
                             </Label>
                             <Input
                                 id="pre-operational-amount"
@@ -702,9 +702,7 @@ function InitialCapitalCard({
                         </div>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        Bagian modal yang sudah dipakai untuk kebutuhan awal
-                        (peralatan, izin, dsb.) — otomatis tercatat sebagai
-                        pengeluaran supaya kas balance.
+                        {t('businessShowPreOpsHelp')}
                     </p>
                     <Button
                         onClick={submitCreate}
@@ -716,7 +714,7 @@ function InitialCapitalCard({
                         {createForm.processing && (
                             <Loader2 className="size-4 animate-spin" />
                         )}
-                        Simpan
+                        {t('save')}
                     </Button>
                     {createForm.errors.amount && (
                         <p className="text-sm text-destructive">
@@ -750,7 +748,7 @@ function InitialCapitalCard({
                         {editForm.processing && (
                             <Loader2 className="size-4 animate-spin" />
                         )}
-                        Ubah
+                        {t('edit')}
                     </Button>
                 </CardContent>
             )}
@@ -759,6 +757,7 @@ function InitialCapitalCard({
 }
 
 function DailyModalRow({ business }: { business: Props['business'] }) {
+    const { t } = useI18n();
     const form = useForm<DailyModalForm>({
         type: 'daily_modal',
         date: new Date().toISOString().slice(0, 10),
@@ -783,7 +782,9 @@ function DailyModalRow({ business }: { business: Props['business'] }) {
         <div className="grid items-end gap-2 rounded-xl bg-muted/40 p-3 sm:grid-cols-[auto_1fr_auto_auto]">
             <div className="flex items-center gap-2">
                 <Wallet className="size-4 shrink-0 text-muted-foreground" />
-                <span className="text-sm font-semibold">Modal harian</span>
+                <span className="text-sm font-semibold">
+                    {t('businessShowDailyCapital')}
+                </span>
             </div>
             <div className="grid grid-cols-2 gap-2">
                 <Input
@@ -812,7 +813,7 @@ function DailyModalRow({ business }: { business: Props['business'] }) {
                 disabled={form.processing || !form.data.amount}
             >
                 {form.processing && <Loader2 className="size-4 animate-spin" />}
-                Catat
+                {t('businessShowRecord')}
             </Button>
             {(form.errors.amount || form.errors.daily_modal) && (
                 <p className="col-span-full text-sm text-destructive">
@@ -824,6 +825,7 @@ function DailyModalRow({ business }: { business: Props['business'] }) {
 }
 
 function IncomeRow({ business }: { business: Props['business'] }) {
+    const { t } = useI18n();
     const form = useForm<DailyForm>({
         type: 'income',
         date: new Date().toISOString().slice(0, 10),
@@ -843,11 +845,13 @@ function IncomeRow({ business }: { business: Props['business'] }) {
         <div className="grid items-end gap-2 rounded-xl bg-muted/40 p-3 sm:grid-cols-[auto_1fr_auto_auto]">
             <div className="flex items-center gap-2">
                 <TrendingUp className="size-4 shrink-0 text-emerald-600" />
-                <span className="text-sm font-semibold">Pendapatan</span>
+                <span className="text-sm font-semibold">
+                    {t('businessShowRevenue')}
+                </span>
             </div>
             <div className="grid grid-cols-[1fr_1fr_1fr] gap-2 sm:grid-cols-[1fr_auto_auto]">
                 <Input
-                    placeholder="Nama (mis. 50 porsi)"
+                    placeholder={t('businessShowRevenueNameHelp')}
                     value={form.data.name}
                     onChange={(event) =>
                         form.setData('name', event.target.value)
@@ -866,7 +870,7 @@ function IncomeRow({ business }: { business: Props['business'] }) {
                     type="number"
                     min="0"
                     inputMode="numeric"
-                    placeholder="Nominal"
+                    placeholder={t('amount')}
                     value={form.data.amount}
                     onChange={(event) =>
                         form.setData('amount', event.target.value)
@@ -882,7 +886,7 @@ function IncomeRow({ business }: { business: Props['business'] }) {
                 }
             >
                 {form.processing && <Loader2 className="size-4 animate-spin" />}
-                Catat
+                {t('businessShowRecord')}
             </Button>
             {(form.errors.name || form.errors.amount) && (
                 <p className="col-span-full text-sm text-destructive">
@@ -894,6 +898,7 @@ function IncomeRow({ business }: { business: Props['business'] }) {
 }
 
 function SmallExpenseRow({ business }: { business: Props['business'] }) {
+    const { t } = useI18n();
     const form = useForm<ExpenseForm>({
         type: 'expense_small',
         date: new Date().toISOString().slice(0, 10),
@@ -901,6 +906,13 @@ function SmallExpenseRow({ business }: { business: Props['business'] }) {
         category: '',
         amount: '',
     });
+
+    const categoryLabels: Record<string, string> = {
+        raw_material: t('businessShowRawMaterials'),
+        operational: t('businessShowOperations'),
+        marketing: t('businessShowMarketing'),
+        pre_operational: t('businessShowPreOpsCapital'),
+    };
 
     function submit(): void {
         form.setData({ ...form.data, type: 'expense_small' });
@@ -914,11 +926,13 @@ function SmallExpenseRow({ business }: { business: Props['business'] }) {
         <div className="grid items-end gap-2 rounded-xl bg-muted/40 p-3 sm:grid-cols-[auto_1fr_auto_auto]">
             <div className="flex items-center gap-2">
                 <Banknote className="size-4 shrink-0 text-muted-foreground" />
-                <span className="text-sm font-semibold">Pengeluaran kecil</span>
+                <span className="text-sm font-semibold">
+                    {t('businessShowSmallExpenses')}
+                </span>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 <Input
-                    placeholder="Nama"
+                    placeholder={t('name')}
                     value={form.data.name}
                     onChange={(event) =>
                         form.setData('name', event.target.value)
@@ -930,7 +944,9 @@ function SmallExpenseRow({ business }: { business: Props['business'] }) {
                     onValueChange={(value) => form.setData('category', value)}
                 >
                     <SelectTrigger className="h-9">
-                        <SelectValue placeholder="Jenis" />
+                        <SelectValue
+                            placeholder={t('businessShowExpenseType')}
+                        />
                     </SelectTrigger>
                     <SelectContent>
                         {Object.entries(categoryLabels).map(
@@ -954,7 +970,7 @@ function SmallExpenseRow({ business }: { business: Props['business'] }) {
                     type="number"
                     min="0"
                     inputMode="numeric"
-                    placeholder="Nominal"
+                    placeholder={t('amount')}
                     value={form.data.amount}
                     onChange={(event) =>
                         form.setData('amount', event.target.value)
@@ -973,7 +989,7 @@ function SmallExpenseRow({ business }: { business: Props['business'] }) {
                 }
             >
                 {form.processing && <Loader2 className="size-4 animate-spin" />}
-                Catat
+                {t('businessShowRecord')}
             </Button>
             {(form.errors.name ||
                 form.errors.amount ||
@@ -989,6 +1005,7 @@ function SmallExpenseRow({ business }: { business: Props['business'] }) {
 }
 
 function BigExpenseRow({ business }: { business: Props['business'] }) {
+    const { t } = useI18n();
     const form = useForm<ExpenseForm>({
         type: 'expense_big',
         date: new Date().toISOString().slice(0, 10),
@@ -996,6 +1013,13 @@ function BigExpenseRow({ business }: { business: Props['business'] }) {
         category: '',
         amount: '',
     });
+
+    const categoryLabels: Record<string, string> = {
+        raw_material: t('businessShowRawMaterials'),
+        operational: t('businessShowOperations'),
+        marketing: t('businessShowMarketing'),
+        pre_operational: t('businessShowPreOpsCapital'),
+    };
 
     function submit(): void {
         form.setData({ ...form.data, type: 'expense_big' });
@@ -1008,7 +1032,7 @@ function BigExpenseRow({ business }: { business: Props['business'] }) {
     return (
         <div className="grid items-end gap-2 sm:grid-cols-[1fr_auto_auto_auto_auto]">
             <Input
-                placeholder="Nama (mis. Belanja bahan baku seminggu)"
+                placeholder={t('businessShowExpenseTypeBigHelp')}
                 value={form.data.name}
                 onChange={(event) => form.setData('name', event.target.value)}
             />
@@ -1017,7 +1041,9 @@ function BigExpenseRow({ business }: { business: Props['business'] }) {
                 onValueChange={(value) => form.setData('category', value)}
             >
                 <SelectTrigger className="sm:w-44">
-                    <SelectValue placeholder="Jenis pengeluaran" />
+                    <SelectValue
+                        placeholder={t('businessShowExpenseTypeLabel')}
+                    />
                 </SelectTrigger>
                 <SelectContent>
                     {Object.entries(categoryLabels).map(([value, label]) => (
@@ -1037,7 +1063,7 @@ function BigExpenseRow({ business }: { business: Props['business'] }) {
                 type="number"
                 min="0"
                 inputMode="numeric"
-                placeholder="Nominal"
+                placeholder={t('amount')}
                 value={form.data.amount}
                 onChange={(event) => form.setData('amount', event.target.value)}
                 className="sm:w-40"
@@ -1056,7 +1082,7 @@ function BigExpenseRow({ business }: { business: Props['business'] }) {
                 ) : (
                     <Plus className="size-4" />
                 )}
-                Catat
+                {t('businessShowRecord')}
             </Button>
             {(form.errors.name ||
                 form.errors.amount ||
@@ -1078,10 +1104,27 @@ function LedgerItem({
     row: LedgerRow;
     onDelete: () => void;
 }) {
+    const { t } = useI18n();
     const isBig = row.type === 'expense_big';
     const isCapital = row.type === 'initial_capital';
     const isDailyModal = row.type === 'daily_modal';
     const isOpening = row.type === 'opening_balance';
+
+    const typeLabels: Record<LedgerRow['type'], string> = {
+        initial_capital: t('businessShowInitialCapital'),
+        daily_modal: t('businessShowDailyCapital'),
+        income: t('businessShowRevenue'),
+        expense_small: t('businessShowSmallExpenses'),
+        expense_big: t('businessShowBigExpensesLabel'),
+        opening_balance: t('businessShowOpeningBalance'),
+    };
+
+    const categoryLabels: Record<string, string> = {
+        raw_material: t('businessShowRawMaterials'),
+        operational: t('businessShowOperations'),
+        marketing: t('businessShowMarketing'),
+        pre_operational: t('businessShowPreOpsCapital'),
+    };
 
     return (
         <div
@@ -1119,12 +1162,12 @@ function LedgerItem({
                 )}
                 {isDailyModal && (
                     <p className="text-[11px] text-muted-foreground">
-                        netto 0 (keluar masuk kas)
+                        {t('businessShowNettoZero')}
                     </p>
                 )}
                 {isOpening && (
                     <p className="text-[11px] text-muted-foreground">
-                        saldo mengalir dari kas sebelumnya
+                        {t('businessShowBalanceFlows')}
                     </p>
                 )}
             </div>
@@ -1157,6 +1200,8 @@ function PaybackCard({
     modalAwal: number;
     totalLaba: number;
 }) {
+    const { t } = useI18n();
+
     if (modalAwal <= 0) {
         return null;
     }
@@ -1168,10 +1213,11 @@ function PaybackCard({
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className="text-base">Balik Modal</CardTitle>
+                <CardTitle className="text-base">
+                    {t('businessShowROI')}
+                </CardTitle>
                 <CardDescription>
-                    Seberapa jauh laba sudah menutup modal awal{' '}
-                    {formatMoney(modalAwal)}.
+                    {t('businessShowROIHelp')} {formatMoney(modalAwal)}.
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3">
@@ -1180,7 +1226,7 @@ function PaybackCard({
                         {formatPercent(percent)}
                     </span>
                     <span className="text-muted-foreground">
-                        {formatMoney(Math.max(totalLaba, 0))} dari{' '}
+                        {formatMoney(Math.max(totalLaba, 0))} {t('savingsFrom')}{' '}
                         {formatMoney(modalAwal)}
                     </span>
                 </div>
@@ -1200,8 +1246,8 @@ function PaybackCard({
                     )}
                 >
                     {reached
-                        ? 'Sudah balik modal, mantap!'
-                        : `Kurang ${formatMoney(remaining)} lagi`}
+                        ? t('businessShowROIComplete')
+                        : `${t('businessShowROIRemaining')} ${formatMoney(remaining)}`}
                 </p>
             </CardContent>
         </Card>
@@ -1223,6 +1269,7 @@ function LrCard({
     lr: LrSummary;
     lrChart: LrChartPoint[];
 }) {
+    const { t } = useI18n();
     const [selected, setSelected] = useState<string>(current.start);
     const isCurrent = selected === current.start;
 
@@ -1243,12 +1290,21 @@ function LrCard({
 
     const completedPeriods = periods.filter((period) => period.completed);
 
+    const categoryLabels: Record<string, string> = {
+        raw_material: t('businessShowRawMaterials'),
+        operational: t('businessShowOperations'),
+        marketing: t('businessShowMarketing'),
+        pre_operational: t('businessShowPreOpsCapital'),
+    };
+
     return (
         <Card>
             <CardHeader>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
-                        <CardTitle className="text-base">Logic L/R</CardTitle>
+                        <CardTitle className="text-base">
+                            {t('businessShowLogicLR')}
+                        </CardTitle>
                         <CardDescription>
                             {formatDate(displayed.start)} –{' '}
                             {formatDate(displayed.end)}
@@ -1257,11 +1313,13 @@ function LrCard({
                     {completedPeriods.length > 0 && (
                         <Select value={selected} onValueChange={setSelected}>
                             <SelectTrigger className="w-56">
-                                <SelectValue placeholder="Pilih periode" />
+                                <SelectValue
+                                    placeholder={t('businessShowPeriodSelect')}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value={current.start}>
-                                    Periode berjalan
+                                    {t('businessShowPeriodCurrent')}
                                 </SelectItem>
                                 {completedPeriods.map((period) => (
                                     <SelectItem
@@ -1281,7 +1339,7 @@ function LrCard({
                 <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-xl border p-3">
                         <p className="text-xs text-muted-foreground">
-                            Pendapatan
+                            {t('businessShowRevenue')}
                         </p>
                         <p className="mt-1 text-2xl font-bold">
                             {formatMoney(displayed.income)}
@@ -1289,7 +1347,7 @@ function LrCard({
                     </div>
                     <div className="rounded-xl border p-3">
                         <p className="text-xs text-muted-foreground">
-                            Total pengeluaran
+                            {t('businessShowTotalExpenses')}
                         </p>
                         <p className="mt-1 text-2xl font-bold">
                             {formatMoney(displayed.total_expense)}
@@ -1337,11 +1395,12 @@ function LrCard({
                                     <span className="w-24 text-right text-xs text-muted-foreground">
                                         {hasFormula ? (
                                             <>
-                                                {actualPct.toFixed(1)}% / rumus{' '}
+                                                {actualPct.toFixed(1)}% /{' '}
+                                                {t('businessShowFormula')}{' '}
                                                 {expected}%
                                             </>
                                         ) : (
-                                            `${actualPct.toFixed(1)}% dari pendapatan`
+                                            `${actualPct.toFixed(1)}${t('businessShowRevenueOf')}`
                                         )}
                                     </span>
                                 </span>
@@ -1358,7 +1417,9 @@ function LrCard({
                             : 'bg-destructive/10',
                     )}
                 >
-                    <span className="text-sm font-medium">Laba / Rugi</span>
+                    <span className="text-sm font-medium">
+                        {t('businessShowProfitLoss')}
+                    </span>
                     <span
                         className={cn(
                             'text-2xl font-bold',
@@ -1399,7 +1460,7 @@ function LrCard({
                                 ),
                                 datasets: [
                                     {
-                                        label: 'Laba aktual',
+                                        label: t('businessShowActualProfit'),
                                         data: lrChart.map(
                                             (point) => point.profit,
                                         ),
@@ -1410,7 +1471,7 @@ function LrCard({
                                         tension: 0.3,
                                     },
                                     {
-                                        label: 'Target laba',
+                                        label: t('businessShowTargetProfit'),
                                         data: lrChart.map(
                                             (point) => point.target_profit,
                                         ),
@@ -1508,10 +1569,12 @@ function computeLr(
     };
 }
 
+const businessShowBreadcrumb = getT();
+
 BusinessesShow.layout = {
     breadcrumbs: [
         {
-            title: 'Bisnis',
+            title: businessShowBreadcrumb('pageBusinessIndex'),
             href: toUrl(index()),
         },
     ],

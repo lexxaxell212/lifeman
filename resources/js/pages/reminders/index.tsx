@@ -25,6 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatDateTime } from '@/lib/format';
+import { useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import { store, update, destroy, done, index } from '@/routes/reminders';
 import type { PaginatedData, Reminder } from '@/types';
@@ -59,24 +60,25 @@ function toDateTimeLocal(value: string | null | undefined): string {
 export default function RemindersIndex({ reminders, filters }: Props) {
     const [createOpen, setCreateOpen] = useState(false);
     const [editing, setEditing] = useState<Reminder | null>(null);
+    const { t } = useI18n();
 
     return (
         <>
-            <Head title="Ingetin" />
+            <Head title={t('pageReminders')} />
 
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">
-                            Ingetin
+                            {t('pageReminders')}
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Pengingat akan muncul sebagai notifikasi.
+                            {t('remindersSubtitle')}
                         </p>
                     </div>
                     <Button onClick={() => setCreateOpen(true)}>
                         <Plus className="size-4" />
-                        Tambah
+                        {t('remindersAdd')}
                     </Button>
                 </div>
 
@@ -86,15 +88,21 @@ export default function RemindersIndex({ reminders, filters }: Props) {
                     status={filters.status}
                     sort={filters.sort}
                     statusOptions={[
-                        { value: 'pending', label: 'Aktif' },
-                        { value: 'done', label: 'Selesai' },
-                        { value: 'overdue', label: 'Terlewat' },
+                        { value: 'pending', label: t('remindersStatusActive') },
+                        { value: 'done', label: t('remindersStatusDone') },
+                        {
+                            value: 'overdue',
+                            label: t('remindersStatusOverdue'),
+                        },
                     ]}
                     sortOptions={[
-                        { value: 'remind_at', label: 'Waktu' },
-                        { value: 'created_at', label: 'Dibuat' },
-                        { value: 'title', label: 'Judul' },
-                        { value: 'done_at', label: 'Selesai' },
+                        { value: 'remind_at', label: t('remindersColTime') },
+                        {
+                            value: 'created_at',
+                            label: t('remindersColCreated'),
+                        },
+                        { value: 'title', label: t('remindersColTitle') },
+                        { value: 'done_at', label: t('remindersColDone') },
                     ]}
                 />
 
@@ -102,7 +110,7 @@ export default function RemindersIndex({ reminders, filters }: Props) {
                     <>
                         {reminders.data.length === 0 && (
                             <p className="py-10 text-center text-sm text-muted-foreground">
-                                Belum ada pengingat.
+                                {t('remindersEmpty')}
                             </p>
                         )}
 
@@ -122,8 +130,8 @@ export default function RemindersIndex({ reminders, filters }: Props) {
             <ReminderFormDialog
                 open={createOpen}
                 onOpenChange={setCreateOpen}
-                title="Tambah Ingetin"
-                description="Buat pengingat baru."
+                title={t('remindersNewTitle')}
+                description={t('remindersNewHelp')}
             />
 
             <ReminderFormDialog
@@ -131,8 +139,8 @@ export default function RemindersIndex({ reminders, filters }: Props) {
                 open={editing !== null}
                 onOpenChange={(open) => !open && setEditing(null)}
                 reminder={editing ?? undefined}
-                title="Ubah Ingetin"
-                description="Perbarui detail pengingat."
+                title={t('remindersEditTitle')}
+                description={t('remindersEditHelp')}
             />
         </>
     );
@@ -148,6 +156,7 @@ function ReminderCard({
     const isDone = reminder.done_at !== null;
     const isExpired = !isDone && reminder.is_expired;
     const Icon = isDone ? CircleCheck : isExpired ? CalendarX2 : Clock3;
+    const { t } = useI18n();
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
 
@@ -192,7 +201,11 @@ function ReminderCard({
                             'hover:border-primary hover:bg-primary hover:text-primary-foreground',
                     )}
                     onClick={markDone}
-                    title={isDone ? 'Selesai' : 'Tandai selesai'}
+                    title={
+                        isDone
+                            ? t('remindersMarkDone')
+                            : t('remindersMarkDoneAction')
+                    }
                 >
                     <Check className="size-4" />
                 </Button>
@@ -221,7 +234,7 @@ function ReminderCard({
                                 <Icon className="size-3.5 shrink-0" />
                             )}
                             {isExpired
-                                ? `Terlewat • ${formatDateTime(reminder.remind_at)}`
+                                ? `${t('remindersOverduePrefix')} ${formatDateTime(reminder.remind_at)}`
                                 : formatDateTime(reminder.remind_at)}
                         </p>
                     )}
@@ -243,8 +256,8 @@ function ReminderCard({
             <ConfirmDialog
                 open={confirmOpen}
                 onOpenChange={setConfirmOpen}
-                title="Hapus ingetin"
-                description={`Hapus ingetin "${reminder.title}"?`}
+                title={t('remindersDelete')}
+                description={`${t('remindersDeleteConfirm')} "${reminder.title}"?`}
                 processing={deleting}
                 onConfirm={confirmDelete}
             />
@@ -266,6 +279,7 @@ function ReminderFormDialog({
     description: string;
 }) {
     const isEditing = reminder !== undefined;
+    const { t } = useI18n();
     const { data, setData, errors, processing, post, put, reset, transform } =
         useForm<ReminderForm>({
             title: reminder?.title ?? '',
@@ -311,14 +325,14 @@ function ReminderFormDialog({
 
                 <div className="grid gap-3 py-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="reminder-title">Judul</Label>
+                        <Label htmlFor="reminder-title">{t('title')}</Label>
                         <Input
                             id="reminder-title"
                             value={data.title}
                             onChange={(event) =>
                                 setData('title', event.target.value)
                             }
-                            placeholder="Contoh: Minum obat"
+                            placeholder={t('remindersTitlePlaceholder')}
                         />
                         {errors.title && (
                             <p className="text-sm text-destructive">
@@ -328,7 +342,9 @@ function ReminderFormDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="reminder-at">Kapan</Label>
+                        <Label htmlFor="reminder-at">
+                            {t('remindersWhen')}
+                        </Label>
                         <Input
                             id="reminder-at"
                             type="datetime-local"
@@ -345,16 +361,14 @@ function ReminderFormDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="reminder-body">
-                            Catatan (opsional)
-                        </Label>
+                        <Label htmlFor="reminder-body">{t('note')}</Label>
                         <Input
                             id="reminder-body"
                             value={data.body}
                             onChange={(event) =>
                                 setData('body', event.target.value)
                             }
-                            placeholder="Detail tambahan"
+                            placeholder={t('noteDetail')}
                         />
                     </div>
                 </div>
@@ -367,10 +381,10 @@ function ReminderFormDialog({
                             reset();
                         }}
                     >
-                        Batal
+                        {t('cancel')}
                     </Button>
                     <Button onClick={submit} disabled={processing}>
-                        {isEditing ? 'Simpan' : 'Tambah'}
+                        {isEditing ? t('remindersSave') : t('remindersSubmit')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

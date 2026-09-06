@@ -3,6 +3,7 @@ import { AlarmClock, ArrowRight, PiggyBank, Sparkles } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import { toUrl } from '@/lib/utils';
 import { dashboard, login } from '@/routes';
 import { register } from '@/routes';
@@ -16,27 +17,28 @@ type Feature = {
     href: string;
 };
 
-const features: Feature[] = [
-    {
-        title: 'Ingetin',
-        description: 'Pengingat yang muncul sebagai notifikasi tepat waktu.',
-        icon: AlarmClock,
-        href: toUrl(remindersIndex()),
-    },
-    {
-        title: 'Nabung',
-        description: 'Target tabungan dengan progress dan saran cicilan.',
-        icon: PiggyBank,
-        href: toUrl(savingsIndex()),
-    },
-];
-
 export default function Welcome() {
+    const { t } = useI18n();
     const { auth } = usePage().props;
+
+    const features: Feature[] = [
+        {
+            title: t('welcomeAppName'),
+            description: t('welcomeTagline1'),
+            icon: AlarmClock,
+            href: toUrl(remindersIndex()),
+        },
+        {
+            title: t('welcomeSavings'),
+            description: t('welcomeSavingsTagline'),
+            icon: PiggyBank,
+            href: toUrl(savingsIndex()),
+        },
+    ];
 
     return (
         <>
-            <Head title="Beranda" />
+            <Head title={t('pageDashboard')} />
 
             <div className="flex min-h-dvh flex-col p-6 lg:justify-center lg:p-8">
                 <header className="mx-auto mb-10 flex w-full max-w-3xl items-center justify-between">
@@ -51,15 +53,17 @@ export default function Welcome() {
                             href={dashboard()}
                             className="text-sm font-medium text-primary hover:underline"
                         >
-                            Buka dashboard
+                            {t('welcomeOpenDashboard')}
                         </Link>
                     ) : (
                         <nav className="flex items-center gap-2">
                             <Button asChild variant="ghost" size="sm">
-                                <Link href={login()}>Masuk</Link>
+                                <Link href={login()}>{t('welcomeSignIn')}</Link>
                             </Button>
                             <Button asChild size="sm">
-                                <Link href={register()}>Daftar</Link>
+                                <Link href={register()}>
+                                    {t('welcomeSignUp')}
+                                </Link>
                             </Button>
                         </nav>
                     )}
@@ -69,19 +73,17 @@ export default function Welcome() {
                     <div className="flex flex-col items-center gap-3 text-center">
                         <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
                             <Sparkles className="size-3.5" />
-                            Kelola hidupmu, lebih tenang
+                            {t('welcomeHeroTitle')}
                         </span>
                         <h1 className="max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl">
-                            Hidup{' '}
-                            <span className="text-amber-600 dark:text-amber-400">
-                                lebih teratur
+                            {t('welcomeHeroLife')}{' '}
+                            <span className="text-brand-600 dark:text-brand-400">
+                                {t('welcomeHeroOrganized')}
                             </span>{' '}
                             dengan Life Man
                         </h1>
                         <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
-                            Ingetin pengingat waktu dan tabungan target dalam
-                            satu aplikasi. Pantau progress, sisihkan cicilan,
-                            dan jangan lewatkan momen penting.
+                            {t('welcomeHeroDescription')}
                         </p>
                         {!auth.user && (
                             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -91,7 +93,7 @@ export default function Welcome() {
                                     className="rounded-xl shadow-lg shadow-primary/25 transition-all duration-200 hover:-translate-y-0.5"
                                 >
                                     <Link href={register()}>
-                                        Mulai Gratis
+                                        {t('welcomeCTA')}
                                         <ArrowRight className="size-4" />
                                     </Link>
                                 </Button>
@@ -101,7 +103,9 @@ export default function Welcome() {
                                     size="lg"
                                     className="rounded-xl"
                                 >
-                                    <Link href={login()}>Masuk</Link>
+                                    <Link href={login()}>
+                                        {t('welcomeSignIn')}
+                                    </Link>
                                 </Button>
                             </div>
                         )}
@@ -112,7 +116,7 @@ export default function Welcome() {
                                 className="mt-2 rounded-xl shadow-lg shadow-primary/25"
                             >
                                 <Link href={dashboard()}>
-                                    Buka dashboard
+                                    {t('welcomeOpenDashboard')}
                                     <ArrowRight className="size-4" />
                                 </Link>
                             </Button>

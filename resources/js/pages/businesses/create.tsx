@@ -11,56 +11,16 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getT, useI18n } from '@/lib/i18n';
 import { cn, toUrl } from '@/lib/utils';
 import { index, store } from '@/routes/businesses';
 import type { BusinessFormula } from '@/types';
 
-const PERIODS = [
-    {
-        value: 'weekly',
-        label: 'Minggu',
-        hint: '7 hari berjalan dari periode mulai',
-    },
-    { value: 'monthly', label: 'Bulan', hint: 'Mengikuti bulan kalender' },
-    { value: 'yearly', label: 'Tahun', hint: 'Mengikuti tahun kalender' },
-] as const;
-
-const FORMULAS = [
-    {
-        value: 'fb_a',
-        title: 'F&B Opsi A',
-        description: 'Untuk usaha makanan/minuman skala kecil',
-        preset: { raw_material: 40, operational: 35, marketing: 5, profit: 20 },
-    },
-    {
-        value: 'fb_b',
-        title: 'F&B Opsi B',
-        description:
-            'Untuk usaha makanan/minuman dengan bahan baku lebih besar',
-        preset: {
-            raw_material: 30,
-            operational: 45,
-            marketing: 10,
-            profit: 15,
-        },
-    },
-    {
-        value: 'custom',
-        title: 'Custom',
-        description: 'Tentukan sendiri persentase rumusmu',
-        preset: { raw_material: 40, operational: 35, marketing: 5, profit: 20 },
-    },
-] as const;
-
-const disabledFormula = {
-    value: 'service',
-    title: 'Industri Jasa',
-    description: 'Tersedia di update berikutnya',
+const presetByType: Record<string, BusinessFormula> = {
+    fb_a: { raw_material: 40, operational: 35, marketing: 5, profit: 20 },
+    fb_b: { raw_material: 30, operational: 45, marketing: 10, profit: 15 },
+    custom: { raw_material: 40, operational: 35, marketing: 5, profit: 20 },
 };
-
-const presetByType: Record<string, BusinessFormula> = Object.fromEntries(
-    FORMULAS.map((f) => [f.value, f.preset]),
-);
 
 type CreateForm = {
     name: string;
@@ -87,11 +47,57 @@ function presetToForm(preset: BusinessFormula): CreateForm {
 }
 
 export default function BusinessesCreate() {
+    const { t } = useI18n();
     const { data, setData, errors, processing, post } = useForm<CreateForm>(
         presetToForm(presetByType.fb_a),
     );
 
     const [customError, setCustomError] = useState<string | null>(null);
+
+    const PERIODS = [
+        {
+            value: 'weekly',
+            label: t('businessTypeWeek'),
+            hint: t('businessTypeWeekHelp'),
+        },
+        {
+            value: 'monthly',
+            label: t('businessTypeMonth'),
+            hint: t('businessTypeMonthHelp'),
+        },
+        {
+            value: 'yearly',
+            label: t('businessTypeYear'),
+            hint: t('businessTypeYearHelp'),
+        },
+    ] as const;
+
+    const FORMULAS = [
+        {
+            value: 'fb_a',
+            title: 'F&B Opsi A',
+            description: t('businessTypeFoodSmall'),
+            preset: presetByType.fb_a,
+        },
+        {
+            value: 'fb_b',
+            title: 'F&B Opsi B',
+            description: t('businessTypeFoodLarge'),
+            preset: presetByType.fb_b,
+        },
+        {
+            value: 'custom',
+            title: 'Custom',
+            description: t('businessTypeCustom'),
+            preset: presetByType.custom,
+        },
+    ];
+
+    const disabledFormula = {
+        value: 'service',
+        title: t('businessTypeService'),
+        description: t('businessTypeServiceHelp'),
+    };
 
     const isCustom = data.formula_type === 'custom';
     const preset = presetByType[data.formula_type];
@@ -133,7 +139,7 @@ export default function BusinessesCreate() {
     function submit(): void {
         if (isCustom && Math.abs(pctSum - 100) > 0.01) {
             setCustomError(
-                `Total persentase rumus harus 100% (sekarang ${pctSum.toFixed(2)}%).`,
+                `${t('businessTotalPercentError')} ${pctSum.toFixed(2)}%).`,
             );
 
             return;
@@ -144,7 +150,7 @@ export default function BusinessesCreate() {
 
     return (
         <>
-            <Head title="Bisnis Baru" />
+            <Head title={t('businessNewTitle')} />
 
             <div className="flex flex-col gap-4">
                 <div>
@@ -153,32 +159,34 @@ export default function BusinessesCreate() {
                         className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
                     >
                         <ArrowLeft className="size-4" />
-                        Manajemen Bisnis
+                        {t('businessManagement')}
                     </Link>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Bisnis Baru
+                        {t('businessNewTitle')}
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                        Siapkan nama, periode rekap, dan rumus bisnismu.
+                        {t('businessNewDescription')}
                     </p>
                 </div>
 
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">
-                            Informasi Bisnis
+                            {t('businessInfoSection')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-3">
                         <div className="grid gap-2">
-                            <Label htmlFor="business-name">Nama Bisnis</Label>
+                            <Label htmlFor="business-name">
+                                {t('businessNameLabel')}
+                            </Label>
                             <Input
                                 id="business-name"
                                 value={data.name}
                                 onChange={(event) =>
                                     setData('name', event.target.value)
                                 }
-                                placeholder="Contoh: Warung Nasi Bu Ani"
+                                placeholder={t('businessNameExample')}
                             />
                             {errors.name && (
                                 <p className="text-sm text-destructive">
@@ -188,7 +196,7 @@ export default function BusinessesCreate() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label>Rekap data per?</Label>
+                            <Label>{t('businessRecapPer')}</Label>
                             <div className="grid grid-cols-3 gap-2">
                                 {PERIODS.map((period) => (
                                     <button
@@ -219,7 +227,9 @@ export default function BusinessesCreate() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="period-start">Periode mulai</Label>
+                            <Label htmlFor="period-start">
+                                {t('businessPeriodStart')}
+                            </Label>
                             <Input
                                 id="period-start"
                                 type="date"
@@ -230,7 +240,7 @@ export default function BusinessesCreate() {
                             />
                             {data.period_start && (
                                 <p className="text-xs text-muted-foreground">
-                                    Periode pertama:{' '}
+                                    {t('businessFirstPeriod')}{' '}
                                     <span className="font-semibold text-foreground">
                                         {formatPeriodDate(data.period_start)} –{' '}
                                         {formatPeriodDate(endDate)}
@@ -249,11 +259,10 @@ export default function BusinessesCreate() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">
-                            Rumus Bisnis
+                            {t('businessFormulaSection')}
                         </CardTitle>
                         <CardDescription>
-                            Perbandingan persentase pengeluaran terhadap
-                            pendapatan, dipakai untuk analisis laba/rugi.
+                            {t('businessFormulaDescription')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-3">
@@ -288,19 +297,19 @@ export default function BusinessesCreate() {
                                 {[
                                     {
                                         key: 'raw_material_pct' as const,
-                                        label: 'Bahan baku (%)',
+                                        label: t('businessFormulaRaw'),
                                     },
                                     {
                                         key: 'operational_pct' as const,
-                                        label: 'Operasional (%)',
+                                        label: t('businessFormulaOps'),
                                     },
                                     {
                                         key: 'marketing_pct' as const,
-                                        label: 'Marketing (%)',
+                                        label: t('businessFormulaMarketing'),
                                     },
                                     {
                                         key: 'profit_pct' as const,
-                                        label: 'Laba (%)',
+                                        label: t('businessFormulaProfit'),
                                     },
                                 ].map((field) => (
                                     <div
@@ -338,9 +347,10 @@ export default function BusinessesCreate() {
                                             : 'text-muted-foreground',
                                     )}
                                 >
-                                    Total: {pctSum.toFixed(2)}%{' '}
+                                    {t('businessFormulaTotal')}{' '}
+                                    {pctSum.toFixed(2)}%{' '}
                                     {Math.abs(pctSum - 100) <= 0.01 &&
-                                        '— sudah 100%'}
+                                        t('businessFormulaComplete')}
                                 </p>
                                 {(customError || errors.profit_pct) && (
                                     <p className="text-sm text-destructive">
@@ -354,11 +364,15 @@ export default function BusinessesCreate() {
                             <div className="flex items-center gap-2 rounded-xl bg-primary/5 px-3 py-2.5 text-sm">
                                 <Briefcase className="size-4 shrink-0 text-primary" />
                                 <span className="text-muted-foreground">
-                                    Persentase:{' '}
+                                    {t('businessFormulaPercent')}{' '}
                                     <span className="font-semibold text-foreground">
-                                        Bahan baku {preset.raw_material}% ·
-                                        Operasional {preset.operational}% ·
-                                        Marketing {preset.marketing}% · Laba{' '}
+                                        {t('businessFormulaRawLabel')}{' '}
+                                        {preset.raw_material}% ·{' '}
+                                        {t('businessFormulaOpsLabel')}{' '}
+                                        {preset.operational}% ·{' '}
+                                        {t('businessFormulaMarketingLabel')}{' '}
+                                        {preset.marketing}% ·{' '}
+                                        {t('businessFormulaProfitLabel')}{' '}
                                         {preset.profit}%
                                     </span>
                                 </span>
@@ -375,14 +389,14 @@ export default function BusinessesCreate() {
 
                 <div className="flex gap-2">
                     <Button asChild variant="outline" className="flex-1">
-                        <Link href={toUrl(index())}>Batal</Link>
+                        <Link href={toUrl(index())}>{t('cancel')}</Link>
                     </Button>
                     <Button
                         onClick={submit}
                         disabled={processing}
                         className="flex-1"
                     >
-                        Buat Bisnis
+                        {t('businessCreateButton')}
                     </Button>
                 </div>
             </div>
@@ -473,10 +487,12 @@ function formatPeriodDate(value: string): string {
     });
 }
 
+const businessCreateBreadcrumb = getT();
+
 BusinessesCreate.layout = {
     breadcrumbs: [
         {
-            title: 'Bisnis',
+            title: businessCreateBreadcrumb('pageBusinessIndex'),
             href: toUrl(index()),
         },
     ],

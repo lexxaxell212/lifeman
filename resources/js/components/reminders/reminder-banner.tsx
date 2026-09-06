@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useReminderAlerts } from '@/hooks/use-reminder-alerts';
 import { formatDateTime } from '@/lib/format';
+import { useI18n } from '@/lib/i18n';
 import type { DueReminder } from '@/types';
 
 export function ReminderBanner() {
@@ -13,7 +14,7 @@ export function ReminderBanner() {
     }
 
     return (
-        <div className="fixed inset-x-0 bottom-24 z-50 flex justify-center px-4">
+        <div className="fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
             <div className="flex w-full max-w-md flex-col gap-2">
                 {alerts.slice(0, 2).map((reminder) => (
                     <ReminderBannerItem
@@ -38,6 +39,7 @@ function ReminderBannerItem({
     onComplete: () => void;
 }) {
     const Icon = AlarmClock;
+    const { t } = useI18n();
 
     return (
         <Card className="animate-in rounded-2xl border-border/70 shadow-lg shadow-black/5 fade-in slide-in-from-bottom-2">
@@ -64,10 +66,10 @@ function ReminderBannerItem({
 
                 <div className="flex shrink-0 gap-2">
                     <Button size="sm" onClick={onComplete}>
-                        Selesai
+                        {t('remindersMarkDone')}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={onDismiss}>
-                        Tutup
+                        {t('close')}
                     </Button>
                 </div>
             </CardContent>

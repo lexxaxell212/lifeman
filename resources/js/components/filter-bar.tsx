@@ -10,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 export type FilterOption = {
@@ -35,9 +36,12 @@ export function FilterBar({
     sort: initialSort = '',
     statusOptions = [],
     sortOptions = [],
-    statusPlaceholder = 'Semua status',
-    sortPlaceholder = 'Urutan',
+    statusPlaceholder,
+    sortPlaceholder,
 }: Props) {
+    const { t } = useI18n();
+    const statusPlaceholderValue = statusPlaceholder ?? t('allStatus');
+    const sortPlaceholderValue = sortPlaceholder ?? t('sortBy');
     const [search, setSearch] = useState(initialSearch);
     const [status, setStatus] = useState(initialStatus);
     const [sort, setSort] = useState(initialSort);
@@ -89,7 +93,7 @@ export function FilterBar({
                 <Input
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Cari…"
+                    placeholder={t('search')}
                     className="pl-9"
                 />
             </div>
@@ -97,14 +101,16 @@ export function FilterBar({
             <div className={cn('grid gap-2', controlsCols)}>
                 {hasStatus && (
                     <div className="grid gap-1.5">
-                        <Label className="sr-only">Status</Label>
+                        <Label className="sr-only">{t('filterStatus')}</Label>
                         <Select value={status} onValueChange={setStatus}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder={statusPlaceholder} />
+                                <SelectValue
+                                    placeholder={statusPlaceholderValue}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">
-                                    {statusPlaceholder}
+                                    {statusPlaceholderValue}
                                 </SelectItem>
                                 {statusOptions.map((option) => (
                                     <SelectItem
@@ -121,14 +127,16 @@ export function FilterBar({
 
                 {hasSort && (
                     <div className="grid gap-1.5">
-                        <Label className="sr-only">Urutan</Label>
+                        <Label className="sr-only">{t('filterOrder')}</Label>
                         <Select value={sort} onValueChange={setSort}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder={sortPlaceholder} />
+                                <SelectValue
+                                    placeholder={sortPlaceholderValue}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="default">
-                                    {sortPlaceholder}
+                                    {sortPlaceholderValue}
                                 </SelectItem>
                                 {sortOptions.map((option) => (
                                     <SelectItem

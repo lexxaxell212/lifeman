@@ -19,28 +19,11 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useI18n } from '@/lib/i18n';
 import { dashboard } from '@/routes';
 import { index as businessesIndex } from '@/routes/businesses';
 import { index as personalIndex } from '@/routes/personal';
 import type { NavItem } from '@/types';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Pribadi',
-        href: personalIndex(),
-        icon: User,
-    },
-    {
-        title: 'Bisnis',
-        href: businessesIndex(),
-        icon: Briefcase,
-    },
-];
 
 const footerNavItems: NavItem[] = [
     {
@@ -56,6 +39,26 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { t } = useI18n();
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+        {
+            title: t('navPersonal'),
+            href: personalIndex(),
+            icon: User,
+        },
+        {
+            title: t('navBusiness'),
+            href: businessesIndex(),
+            icon: Briefcase,
+        },
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

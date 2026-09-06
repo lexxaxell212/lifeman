@@ -4,6 +4,7 @@ import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 import Heading from '@/components/heading';
 import { useCurrentUrl } from '@/hooks/use-current-url';
+import { useI18n } from '@/lib/i18n';
 import { checkForUpdates } from '@/lib/update-check';
 import type { UpdateInfo } from '@/lib/update-check';
 import { cn, toUrl } from '@/lib/utils';
@@ -12,28 +13,29 @@ import { edit as editAppearance } from '@/routes/appearance';
 import { edit } from '@/routes/profile';
 import type { NavItem } from '@/types';
 
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Informasi Akun',
-        href: edit(),
-        icon: User,
-    },
-    {
-        title: 'Tampilan & Suara',
-        href: editAppearance(),
-        icon: Palette,
-    },
-    {
-        title: 'Tentang App',
-        href: editAbout(),
-        icon: Info,
-    },
-];
-
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { t } = useI18n();
     const { appVersion } = usePage().props;
     const [update, setUpdate] = useState<UpdateInfo | null>(null);
+
+    const sidebarNavItems: NavItem[] = [
+        {
+            title: t('settingsAccount'),
+            href: edit(),
+            icon: User,
+        },
+        {
+            title: t('settingsAppearance'),
+            href: editAppearance(),
+            icon: Palette,
+        },
+        {
+            title: t('settingsAbout'),
+            href: editAbout(),
+            icon: Info,
+        },
+    ];
 
     useEffect(() => {
         let cancelled = false;
@@ -50,55 +52,52 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     }, [appVersion]);
 
     return (
-        <div className="px-3 py-4">
-            <Heading
-                title="Pengaturan"
-                description="Kelola profil, keamanan, dan preferensi akunmu"
-            />
-
-            <div className="flex flex-col gap-4 lg:flex-row lg:gap-12">
-                <aside className="w-full shrink-0 lg:w-64">
-                    <nav
-                        className="grid grid-cols-3 gap-2 rounded-2xl border bg-card p-2 shadow-sm"
-                        aria-label="Pengaturan"
-                    >
-                        {sidebarNavItems.map((item) => {
-                            const active = isCurrentOrParentUrl(item.href);
-
-                            return (
-                                <Link
-                                    key={toUrl(item.href)}
-                                    href={item.href}
-                                    prefetch="mount"
-                                    cacheFor="60s"
-                                    className={cn(
-                                        'relative flex flex-col items-center gap-1.5 rounded-xl px-1 py-3 text-center text-[11px] font-medium transition-colors duration-200',
-                                        active
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground',
-                                    )}
-                                >
-                                    {item.icon && (
-                                        <item.icon className="size-5" />
-                                    )}
-                                    <span>{item.title}</span>
-                                    {item.title === 'Tentang App' &&
-                                        update?.updateAvailable && (
-                                            <span
-                                                className="absolute top-1.5 right-1.5 size-2 rounded-full bg-destructive"
-                                                aria-label="Update tersedia"
-                                            />
-                                        )}
-                                </Link>
-                            );
-                        })}
-                    </nav>
-                </aside>
-
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-4">{children}</section>
-                </div>
+        <div className="px-3 py-4 sm:px-6">
+            <div className="mb-4">
+                <Heading
+                    variant="small"
+                    title={t('settingsTitle')}
+                    description={t('settingsDescription')}
+                />
             </div>
+
+            <nav
+                className="mb-4 flex gap-1.5 overflow-x-auto rounded-2xl border border-border/70 bg-card p-1.5 shadow-sm"
+                aria-label={t('settingsTitle')}
+            >
+                {sidebarNavItems.map((item) => {
+                    const active = isCurrentOrParentUrl(item.href);
+
+                    return (
+                        <Link
+                            key={toUrl(item.href)}
+                            href={item.href}
+                            prefetch="mount"
+                            cacheFor="60s"
+                            className={cn(
+                                'relative flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-200',
+                                active
+                                    ? 'bg-linear-to-r from-brand-500 to-brand-600 text-white shadow-md shadow-brand-500/30'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                            )}
+                        >
+                            {item.icon && <item.icon className="size-4" />}
+                            <span>{item.title}</span>
+                            {item.title === t('settingsAbout') &&
+                                update?.updateAvailable && (
+                                    <span
+                                        className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-destructive"
+                                        aria-label={t(
+                                            'settingsUpdateAvailable',
+                                        )}
+                                    />
+                                )}
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            <section className="space-y-3">{children}</section>
         </div>
     );
 }

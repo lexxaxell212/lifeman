@@ -2,6 +2,7 @@ import { Check, Monitor, Moon, Sun } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Appearance } from '@/hooks/use-appearance';
 import { useAppearance } from '@/hooks/use-appearance';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 type ThemeOption = {
@@ -9,12 +10,6 @@ type ThemeOption = {
     icon: LucideIcon;
     label: string;
 };
-
-const options: ThemeOption[] = [
-    { value: 'light', icon: Sun, label: 'Terang' },
-    { value: 'dark', icon: Moon, label: 'Gelap' },
-    { value: 'system', icon: Monitor, label: 'Sistem' },
-];
 
 function MockCard({ dark = false }: { dark?: boolean }) {
     return (
@@ -67,6 +62,13 @@ function MockCard({ dark = false }: { dark?: boolean }) {
 
 export default function AppearanceTabs() {
     const { appearance, updateAppearance } = useAppearance();
+    const { t } = useI18n();
+
+    const options: ThemeOption[] = [
+        { value: 'light', icon: Sun, label: t('themeLight') },
+        { value: 'dark', icon: Moon, label: t('themeDark') },
+        { value: 'system', icon: Monitor, label: t('themeSystem') },
+    ];
 
     return (
         <div className="grid gap-3 sm:grid-cols-3">

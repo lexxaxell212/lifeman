@@ -2,6 +2,7 @@ import { CheckCircle2, LoaderCircle, TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { checkAssets } from '@/lib/asset-check';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 const APP_NAME = import.meta.env.VITE_APP_NAME || 'Life Man';
@@ -14,6 +15,7 @@ type SplashPhase = 'loading' | 'fading' | 'hidden';
 type AssetStatus = 'checking' | 'match' | 'mismatch' | 'unavailable';
 
 export function AppSplash({ appVersion }: { appVersion?: string }) {
+    const { t } = useI18n();
     const [phase, setPhase] = useState<SplashPhase>('loading');
     const [assetStatus, setAssetStatus] = useState<AssetStatus>('checking');
 
@@ -92,7 +94,7 @@ export function AppSplash({ appVersion }: { appVersion?: string }) {
         <div
             role="status"
             aria-live="polite"
-            aria-label={`Memuat ${APP_NAME}`}
+            aria-label={`${t('splashLoading')} ${APP_NAME}`}
             className={cn(
                 'pointer-events-none fixed inset-0 z-[200] flex flex-col items-center justify-center gap-8 bg-black text-white transition-opacity duration-500',
                 phase === 'fading' && 'opacity-0',
@@ -102,10 +104,12 @@ export function AppSplash({ appVersion }: { appVersion?: string }) {
                 <AppLogoIcon className="size-24 drop-shadow-lg" />
             </div>
             <div className="flex flex-col items-center gap-1 text-center">
-                <p className="text-2xl font-bold tracking-tight text-amber-400">
+                <p className="text-2xl font-bold tracking-tight text-brand-400">
                     {APP_NAME}
                 </p>
-                <p className="text-sm opacity-80">Versi {appVersion}</p>
+                <p className="text-sm opacity-80">
+                    {t('splashVersion')} {appVersion}
+                </p>
             </div>
             <div className="flex items-center gap-2 text-xs font-medium opacity-90">
                 {assetStatus === 'checking' && (
@@ -123,13 +127,13 @@ export function AppSplash({ appVersion }: { appVersion?: string }) {
                 {assetStatus === 'mismatch' && (
                     <>
                         <TriangleAlert className="size-3.5" />
-                        Menyesuaikan aset...
+                        {t('splashAdjusting')}
                     </>
                 )}
                 {assetStatus === 'unavailable' && (
                     <>
                         <TriangleAlert className="size-3.5" />
-                        Cek aset tidak tersedia
+                        {t('splashAssetCheck')}
                     </>
                 )}
             </div>

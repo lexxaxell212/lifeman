@@ -11,6 +11,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import GlobalChromeLayout from '@/layouts/global-chrome-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { initBootDiag } from '@/lib/diagnose';
+import { initializeLanguage } from '@/lib/i18n';
 
 const DIAGNOSE_ENABLED = import.meta.env.VITE_DIAGNOSE_ENABLED === 'true';
 
@@ -71,11 +72,14 @@ createInertiaApp({
         );
     },
     progress: {
-        delay: 250,
-        color: '#E17100',
+        delay: 150,
+        color: '#16a34a',
         includeCSS: true,
     },
 });
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// This will set the app language on load...
+initializeLanguage();
