@@ -1,43 +1,43 @@
 # lifeman
 
-Aplikasi manajemen keuangan pribadi berbasis **Laravel 13 + Inertia (React) + Capacitor**. Diakses sebagai web (`lifeman.lxx.my.id`) dan Android app.
+Personal finance management app built on **Laravel 13 + Inertia (React) + Capacitor**. Accessible as a web app (`lifeman.lxx.my.id`) and an Android app.
 
-## Isi Repo
+## What's Inside
 
-| Folder | Deskripsi |
-| ------ | --------- |
-| `app/` | Logika aplikasi (models, controllers, Filament admin, jobs, dll.) |
-| `resources/js/` | Frontend React (Inertia) — komponen, halaman, hooks (termasuk back-handler Capacitor) |
+| Folder | Description |
+| ------ | ----------- |
+| `app/` | App logic (models, controllers, Filament admin, jobs, etc.) |
+| `resources/js/` | React frontend (Inertia) — components, pages, hooks (including the Capacitor back-handler) |
 | `public/` | Web root — `index.php`, build assets, storage symlink |
-| `server/` | Salinan konfigurasi nginx site `lifeman.lxx.my.id` |
+| `server/` | Copy of the nginx site config for `lifeman.lxx.my.id` |
 | `database/` | Migrations & seeders |
-| `scripts/`, `deploy/` | Utilitas tambahan & deploy |
+| `scripts/`, `deploy/` | Extra utilities & deployment |
 
-## Cara Penggunaan
+## How to Use
 
-### Prasyarat
+### Prerequisites
 - PHP 8.5 + Composer
-- Node 20+ dan npm
+- Node 20+ and npm
 
 ### Setup
 
 ```bash
 composer install
-cp .env.example .env        # isi APP_KEY (php artisan key:generate), DB_, dll.
+cp .env.example .env        # set APP_KEY (php artisan key:generate), DB_, etc.
 npm install
 php artisan storage:link
 php artisan migrate --seed
-NODE_ENV=production npm run build   # bangun aset frontend
+NODE_ENV=production npm run build   # build frontend assets
 ```
 
-### Menjalankan
+### Run
 
 ```bash
-npm run dev                 # mode development (Vite HMR)
-php artisan serve           # atau via nginx → public/
+npm run dev                 # development mode (Vite HMR)
+php artisan serve           # or via nginx → public/
 ```
 
-Untuk menjalankan di Android/Capacitor:
+For Android/Capacitor:
 
 ```bash
 npx cap sync
@@ -46,5 +46,5 @@ npx cap open android
 
 ### Deploy
 
-- Nginx root: `~/lifeman/public` (lihat `server/lifeman.lxx.my.id`)
-- Setelah setiap perubahan: `php artisan optimize:clear && php artisan optimize`
+- Nginx root: `~/lifeman/public` (see `server/lifeman.lxx.my.id`)
+- After any change: `php artisan optimize:clear && php artisan optimize`
