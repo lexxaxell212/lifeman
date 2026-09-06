@@ -62,7 +62,7 @@ export default function CashflowsIndex({ cashflows, filters, stats }: Props) {
         <>
             <Head title={t('pageCashflowIndex')} />
 
-            <div className="flex min-h-screen flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4">
                 <PageBanner
                     stats={[
                         {

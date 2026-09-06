@@ -1,21 +1,26 @@
-import { Link } from '@inertiajs/react';
 import { Bell, Menu, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
-import { toUrl } from '@/lib/utils';
-import { index as notificationsIndex } from '@/routes/notifications';
+import { cn } from '@/lib/utils';
 
 type Props = {
     open: boolean;
     onToggle: () => void;
+    notificationsOpen: boolean;
+    onNotificationsToggle: () => void;
 };
 
-export function NavBar({ open, onToggle }: Props) {
+export function NavBar({
+    open,
+    onToggle,
+    notificationsOpen,
+    onNotificationsToggle,
+}: Props) {
     const { t } = useI18n();
 
     return (
-        <nav className="fixed inset-x-0 bottom-0 z-[70] border-t border-border/60 bg-background/90 backdrop-blur-xl">
+        <nav className="fixed inset-x-0 bottom-0 z-[70] border-t border-border/60 bg-background">
             <div className="mx-auto flex h-16 w-full max-w-5xl items-center gap-3 px-3 md:px-4">
                 <Button
                     variant="ghost"
@@ -48,18 +53,20 @@ export function NavBar({ open, onToggle }: Props) {
                 </Button>
 
                 <Button
-                    asChild
                     variant="ghost"
                     size="icon"
-                    className="ml-auto rounded-xl text-foreground"
+                    className={cn(
+                        'ml-auto rounded-xl text-foreground',
+                        notificationsOpen && 'bg-primary/15 text-primary',
+                    )}
                     aria-label={t('pageNotifications')}
+                    aria-expanded={notificationsOpen}
+                    onClick={onNotificationsToggle}
                 >
-                    <Link href={toUrl(notificationsIndex())}>
-                        <span className="relative flex size-6 items-center justify-center">
-                            <Bell className="size-5" />
-                            <span className="absolute top-0 right-0 size-2 rounded-full bg-destructive" />
-                        </span>
-                    </Link>
+                    <span className="relative flex size-6 items-center justify-center">
+                        <Bell className="size-5" />
+                        <span className="absolute top-0 right-0 size-2 rounded-full bg-destructive" />
+                    </span>
                 </Button>
             </div>
         </nav>

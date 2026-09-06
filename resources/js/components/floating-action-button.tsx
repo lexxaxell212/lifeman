@@ -9,7 +9,7 @@ export function FloatingActionButton({ className, ...props }: Props) {
             <div className="flex justify-end">
                 <Button
                     className={cn(
-                        'pointer-events-auto h-12 gap-2 rounded-2xl border border-primary/30 bg-primary/15 px-5 text-sm font-semibold text-primary hover:bg-primary/25 hover:text-primary',
+                        'pointer-events-auto h-12 gap-2 rounded-2xl bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90',
                         className,
                     )}
                     {...props}

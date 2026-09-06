@@ -54,7 +54,6 @@ function getNavItems(): DrawerSection[] {
             items: [
                 { title: 'navSavings', icon: PiggyBank, href: savingsIndex() },
                 { title: 'navCashflow', icon: Wallet, href: cashflowsIndex() },
-                { title: 'navReminders', icon: Bell, href: remindersIndex() },
             ],
         },
         {
@@ -70,6 +69,7 @@ function getNavItems(): DrawerSection[] {
         {
             label: 'navOthers',
             items: [
+                { title: 'navReminders', icon: Bell, href: remindersIndex() },
                 { title: 'navSettings', icon: Settings, href: profile.edit() },
             ],
         },

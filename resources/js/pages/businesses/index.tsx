@@ -53,7 +53,7 @@ export default function BusinessesIndex({ businesses, stats }: Props) {
         <>
             <Head title={t('pageBusinessIndex')} />
 
-            <div className="flex min-h-screen flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4">
                 <PageBanner
                     stats={[
                         {

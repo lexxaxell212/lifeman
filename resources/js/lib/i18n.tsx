@@ -236,7 +236,6 @@ const translations = {
     bannerDueToday: { en: 'Due today', id: 'Hari ini' },
     bannerBusinesses: { en: 'Business', id: 'Bisnis' },
     bannerTransactions: { en: 'Transactions', id: 'Transaksi' },
-    bannerUnread: { en: 'Unread', id: 'Belum dibaca' },
 
     /* ── Settings: Security ───────────────────────────────────────────── */
     securityTitle: { en: 'Security', id: 'Keamanan' },

@@ -65,7 +65,7 @@ export default function SavingsIndex({ goals, filters, stats }: Props) {
         <>
             <Head title={t('pageSavingsIndex')} />
 
-            <div className="flex min-h-screen flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4">
                 <PageBanner
                     stats={[
                         {
