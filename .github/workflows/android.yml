@@ -57,6 +57,10 @@ jobs:
             - name: Sync Capacitor
               run: npx cap sync android
 
+            - name: Hide native WebView scrollbar
+              run: |
+                  sed -i 's|<com.getcapacitor.CapacitorWebView|<com.getcapacitor.CapacitorWebView\n        android:scrollbars="none"\n        android:overScrollMode="never"|' android/app/src/main/res/layout/activity_main.xml
+
             - name: Cache Gradle dependencies
               uses: actions/cache@v4
               with:
