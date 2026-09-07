@@ -1,12 +1,13 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Bell, Check, Languages, Palette, Volume2 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { Languages, Monitor, Moon, Sun, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import AppearanceTabs from '@/components/appearance-tabs';
-import Heading from '@/components/heading';
-import { LanguageSelector } from '@/components/language-selector';
+import { SettingsGroup, SettingsRadioDot } from '@/components/settings-list';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Appearance } from '@/hooks/use-appearance';
+import { useAppearance } from '@/hooks/use-appearance';
 import { useI18n } from '@/lib/i18n';
+import type { Language, TranslationKey } from '@/lib/i18n';
 import {
     SOUNDS,
     isNativePlatform,
@@ -21,9 +22,25 @@ type PageProps = {
     auth: Auth;
 };
 
+const LANGUAGE_OPTIONS: { value: Language; label: TranslationKey }[] = [
+    { value: 'id', label: 'langIndonesian' },
+    { value: 'en', label: 'langEnglish' },
+];
+
 export default function Appearance() {
     const { auth } = usePage<PageProps>().props;
-    const { t } = useI18n();
+    const { t, lang, setLang } = useI18n();
+    const { appearance, updateAppearance } = useAppearance();
+
+    const THEME_OPTIONS: {
+        value: Appearance;
+        icon: LucideIcon;
+        label: string;
+    }[] = [
+        { value: 'light', icon: Sun, label: t('themeLight') },
+        { value: 'dark', icon: Moon, label: t('themeDark') },
+        { value: 'system', icon: Monitor, label: t('themeSystem') },
+    ];
     const [selected, setSelected] = useState(
         auth.user.notification_sound ?? 'default',
     );
@@ -88,148 +105,172 @@ export default function Appearance() {
 
             <h1 className="sr-only">{t('appearanceDescription')}</h1>
 
-            <div className="space-y-3">
-                <Heading
-                    variant="small"
-                    title="Tampilan dan Suara"
-                    description="Pilih tema dan suara notifikasi yang paling nyaman untukmu"
-                />
+            <div className="space-y-4">
+                <SettingsGroup label={t('langLabel')}>
+                    {LANGUAGE_OPTIONS.map((option) => (
+                        <button
+                            key={option.value}
+                            type="button"
+                            role="radio"
+                            aria-checked={lang === option.value}
+                            onClick={() => setLang(option.value)}
+                            className={cn(
+                                'flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150',
+                                lang === option.value
+                                    ? 'bg-primary/10'
+                                    : 'hover:bg-muted/60 active:bg-muted/80',
+                            )}
+                        >
+                            <span
+                                className={cn(
+                                    'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors duration-150',
+                                    lang === option.value
+                                        ? 'bg-primary/15 text-primary'
+                                        : 'bg-muted text-muted-foreground',
+                                )}
+                            >
+                                <Languages className="size-4" />
+                            </span>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Languages className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                {t('langLabel')}
-                            </CardTitle>
-                            <p className="text-xs text-muted-foreground">
-                                {t('langDescription')}
-                            </p>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-4 py-3">
-                        <LanguageSelector />
-                    </CardContent>
-                </Card>
+                            <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                                {t(option.label)}
+                            </span>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Palette className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                Tema aplikasi
-                            </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-4 py-3">
-                        <AppearanceTabs />
-                    </CardContent>
-                </Card>
+                            <SettingsRadioDot
+                                selected={lang === option.value}
+                            />
+                        </button>
+                    ))}
+                </SettingsGroup>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Bell className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                Suara pengingat
-                            </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="grid gap-3 px-4 py-3">
-                        {SOUNDS.map((sound) => {
-                            const isSelected = selected === sound.id;
-                            const isDefault = sound.id === 'default';
-                            const isPlaying = playingId === sound.id;
+                <SettingsGroup label={t('settingsThemeLabel')}>
+                    {THEME_OPTIONS.map(({ value, icon: Icon, label }) => (
+                        <button
+                            key={value}
+                            type="button"
+                            role="radio"
+                            aria-checked={appearance === value}
+                            onClick={() => updateAppearance(value)}
+                            className={cn(
+                                'flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150',
+                                appearance === value
+                                    ? 'bg-primary/10'
+                                    : 'hover:bg-muted/60 active:bg-muted/80',
+                            )}
+                        >
+                            <span
+                                className={cn(
+                                    'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors duration-150',
+                                    appearance === value
+                                        ? 'bg-primary/15 text-primary'
+                                        : 'bg-muted text-muted-foreground',
+                                )}
+                            >
+                                <Icon className="size-4" />
+                            </span>
 
-                            return (
-                                <Card
-                                    key={sound.id}
+                            <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                                {label}
+                            </span>
+
+                            <SettingsRadioDot selected={appearance === value} />
+                        </button>
+                    ))}
+                </SettingsGroup>
+
+                <SettingsGroup label={t('notificationsSoundLabel')}>
+                    {SOUNDS.map((sound) => {
+                        const isSelected = selected === sound.id;
+                        const isDefault = sound.id === 'default';
+                        const isPlaying = playingId === sound.id;
+
+                        return (
+                            <div
+                                key={sound.id}
+                                role="radio"
+                                aria-checked={isSelected}
+                                tabIndex={0}
+                                onClick={() => choose(sound.id)}
+                                onKeyDown={(event) => {
+                                    if (
+                                        event.key === 'Enter' ||
+                                        event.key === ' '
+                                    ) {
+                                        event.preventDefault();
+                                        choose(sound.id);
+                                    }
+                                }}
+                                className={cn(
+                                    'flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors duration-150',
+                                    isSelected
+                                        ? 'bg-primary/10'
+                                        : 'hover:bg-muted/60 active:bg-muted/80',
+                                )}
+                            >
+                                <span
                                     className={cn(
-                                        'cursor-pointer rounded-xl transition-all duration-200',
-                                        isSelected && 'border-primary',
+                                        'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors duration-150',
+                                        isSelected
+                                            ? 'bg-primary/15 text-primary'
+                                            : 'bg-muted text-muted-foreground',
                                     )}
-                                    onClick={() => choose(sound.id)}
                                 >
-                                    <CardContent className="flex items-center gap-3 p-3.5">
-                                        <span
-                                            className={cn(
-                                                'flex size-9 shrink-0 items-center justify-center rounded-lg',
-                                                isSelected
-                                                    ? 'bg-primary/15 text-primary'
-                                                    : 'bg-muted text-muted-foreground',
-                                            )}
+                                    <Volume2 className="size-4" />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                    <p
+                                        className={cn(
+                                            'truncate text-sm font-medium',
+                                            isSelected && 'text-primary',
+                                        )}
+                                    >
+                                        {sound.label}
+                                    </p>
+                                    {isDefault && (
+                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                            {t('notificationsDefaultSound')}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {isPlaying ? (
+                                    <div
+                                        className="flex h-4 shrink-0 items-end gap-0.5"
+                                        aria-label={t('notificationsPlaying')}
+                                    >
+                                        {[0, 1, 2].map((i) => (
+                                            <span
+                                                key={i}
+                                                className="w-1 animate-pulse rounded-full bg-primary"
+                                                style={{
+                                                    height: `${6 + i * 4}px`,
+                                                    animationDelay: `${i * 0.18}s`,
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    !isDefault && (
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="size-8 shrink-0 rounded-full"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                preview(sound.id);
+                                            }}
+                                            title={`${t('notifPlay')} ${sound.label}`}
                                         >
                                             <Volume2 className="size-4" />
-                                        </span>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="font-medium">
-                                                {sound.label}
-                                            </p>
-                                            {isDefault && (
-                                                <p className="text-xs text-muted-foreground">
-                                                    Mengikuti suara notifikasi
-                                                    default perangkat.
-                                                </p>
-                                            )}
-                                        </div>
+                                        </Button>
+                                    )
+                                )}
 
-                                        {isPlaying ? (
-                                            <div
-                                                className="flex h-4 shrink-0 items-end gap-0.5"
-                                                aria-label="Memutar preview"
-                                            >
-                                                {[0, 1, 2].map((i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="w-1 animate-pulse rounded-full bg-primary"
-                                                        style={{
-                                                            height: `${6 + i * 4}px`,
-                                                            animationDelay: `${i * 0.18}s`,
-                                                        }}
-                                                    />
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            !isDefault && (
-                                                <Button
-                                                    size="icon"
-                                                    variant="ghost"
-                                                    className="size-8 shrink-0 rounded-full"
-                                                    onClick={(event) => {
-                                                        event.stopPropagation();
-                                                        preview(sound.id);
-                                                    }}
-                                                    title={`Putar ${sound.label}`}
-                                                >
-                                                    <Volume2 className="size-4" />
-                                                </Button>
-                                            )
-                                        )}
-
-                                        <span
-                                            className={cn(
-                                                'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200',
-                                                isSelected
-                                                    ? 'border-primary bg-primary/15 text-primary'
-                                                    : 'border-muted-foreground/40',
-                                            )}
-                                        >
-                                            {isSelected && (
-                                                <Check className="size-3" />
-                                            )}
-                                        </span>
-                                    </CardContent>
-                                </Card>
-                            );
-                        })}
-                    </CardContent>
-                </Card>
+                                <SettingsRadioDot selected={isSelected} />
+                            </div>
+                        );
+                    })}
+                </SettingsGroup>
             </div>
         </>
     );

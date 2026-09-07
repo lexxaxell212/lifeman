@@ -1,29 +1,74 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Info, Palette, User } from 'lucide-react';
+import type { InertiaLinkProps } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
+import { Bell, ChevronRight, Info, Palette } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
-import Heading from '@/components/heading';
+import { SettingsGroup, SettingsRow } from '@/components/settings-list';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
+import { useInitials } from '@/hooks/use-initials';
 import { useI18n } from '@/lib/i18n';
 import { checkForUpdates } from '@/lib/update-check';
 import type { UpdateInfo } from '@/lib/update-check';
-import { cn, toUrl } from '@/lib/utils';
+import { toUrl } from '@/lib/utils';
 import { edit as editAbout } from '@/routes/about';
 import { edit as editAppearance } from '@/routes/appearance';
+import { edit as editNotifications } from '@/routes/notifications';
 import { edit } from '@/routes/profile';
-import type { NavItem } from '@/types';
+import type { Auth } from '@/types';
+
+type Href = NonNullable<InertiaLinkProps['href']>;
+
+type PageProps = {
+    auth: Auth;
+};
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
-    const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { isCurrentOrParentUrl, currentUrl } = useCurrentUrl();
     const { t } = useI18n();
     const { appVersion } = usePage().props;
+    const { auth } = usePage<PageProps>().props;
+    const user = auth?.user;
+    const getInitials = useInitials();
     const [update, setUpdate] = useState<UpdateInfo | null>(null);
+    const [pendingHref, setPendingHref] = useState<string | null>(null);
 
-    const sidebarNavItems: NavItem[] = [
+    useEffect(() => {
+        const clearPending = (): void => {
+            setPendingHref((current) => (current ? null : current));
+        };
+
+        const unlisten: Array<() => void> = [
+            router.on('success', clearPending),
+            router.on('error', clearPending),
+            router.on('cancel', clearPending),
+            router.on('networkError', clearPending),
+        ];
+
+        return () => {
+            unlisten.forEach((remove) => remove());
+        };
+    }, []);
+
+    const selectRow = (href: Href): void => {
+        setPendingHref(toUrl(href));
+    };
+
+    const isRowActive = (href: Href): boolean => {
+        const hrefString = toUrl(href);
+
+        if (pendingHref !== null && pendingHref !== currentUrl) {
+            return pendingHref === hrefString;
+        }
+
+        return isCurrentOrParentUrl(href);
+    };
+
+    const navItems = [
         {
-            title: t('settingsAccount'),
-            href: edit(),
-            icon: User,
+            title: t('settingsNotifications'),
+            href: editNotifications(),
+            icon: Bell,
         },
         {
             title: t('settingsAppearance'),
@@ -52,52 +97,64 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     }, [appVersion]);
 
     return (
-        <div className="px-3 py-4 sm:px-6">
-            <div className="mb-4">
-                <Heading
-                    variant="small"
-                    title={t('settingsTitle')}
-                    description={t('settingsDescription')}
-                />
-            </div>
+        <div className="mx-auto w-full max-w-2xl space-y-4 px-3 py-4 sm:px-6">
+            <header className="space-y-0.5">
+                <h1 className="text-xl font-semibold tracking-tight">
+                    {t('settingsTitle')}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    {t('settingsDescription')}
+                </p>
+            </header>
 
-            <nav
-                className="mb-4 flex flex-wrap justify-center gap-1.5 rounded-2xl border border-border/70 bg-card p-1.5"
-                aria-label={t('settingsTitle')}
-            >
-                {sidebarNavItems.map((item) => {
-                    const active = isCurrentOrParentUrl(item.href);
-
-                    return (
-                        <Link
+            <nav aria-label={t('settingsTitle')}>
+                <SettingsGroup>
+                    {user && (
+                        <SettingsRow
+                            href={edit()}
+                            icon={
+                                <Avatar className="size-8">
+                                    <AvatarFallback className="bg-primary/15 text-[11px] font-bold text-primary">
+                                        {getInitials(user.name)}
+                                    </AvatarFallback>
+                                </Avatar>
+                            }
+                            title={user.name}
+                            subtitle={user.email}
+                            chevron
+                            active={isRowActive(edit())}
+                            onClick={() => selectRow(edit())}
+                        />
+                    )}
+                    {navItems.map((item) => (
+                        <SettingsRow
                             key={toUrl(item.href)}
                             href={item.href}
-                            prefetch="mount"
-                            cacheFor="60s"
-                            className={cn(
-                                'relative flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-200',
-                                active
-                                    ? 'bg-primary/15 text-primary'
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                            )}
-                        >
-                            {item.icon && <item.icon className="size-4" />}
-                            <span>{item.title}</span>
-                            {item.title === t('settingsAbout') &&
-                                update?.updateAvailable && (
-                                    <span
-                                        className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-destructive"
-                                        aria-label={t(
-                                            'settingsUpdateAvailable',
-                                        )}
-                                    />
-                                )}
-                        </Link>
-                    );
-                })}
+                            icon={item.icon}
+                            title={item.title}
+                            chevron
+                            active={isRowActive(item.href)}
+                            onClick={() => selectRow(item.href)}
+                            trailing={
+                                item.title === t('settingsAbout') &&
+                                update?.updateAvailable ? (
+                                    <span className="flex items-center gap-2">
+                                        <span
+                                            className="size-2 rounded-full bg-destructive"
+                                            aria-label={t(
+                                                'settingsUpdateAvailable',
+                                            )}
+                                        />
+                                        <ChevronRight className="size-4 text-muted-foreground/60" />
+                                    </span>
+                                ) : undefined
+                            }
+                        />
+                    ))}
+                </SettingsGroup>
             </nav>
 
-            <section className="space-y-3">{children}</section>
+            <main className="space-y-4">{children}</main>
         </div>
     );
 }

@@ -124,7 +124,7 @@ export function NavDrawer({ open, onOpenChange }: Props) {
                 side="left"
                 hideClose
                 onOverlayClick={() => onOpenChange(false)}
-                className="z-50 w-[80%] max-w-xs gap-0 p-0 sm:max-w-sm"
+                className="z-[80] w-[80%] max-w-xs gap-0 p-0 sm:max-w-sm"
             >
                 <SheetHeader className="border-b px-6 py-5 text-left">
                     <div className="flex items-center gap-3">

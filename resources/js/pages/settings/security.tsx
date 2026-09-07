@@ -1,18 +1,11 @@
 import { Form, Head } from '@inertiajs/react';
-import { KeyRound, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { useRef } from 'react';
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
-import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
+import { SettingsGroup } from '@/components/settings-list';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useI18n } from '@/lib/i18n';
 import { edit } from '@/routes/security';
@@ -32,28 +25,9 @@ export default function Security(props: Props) {
 
             <h1 className="sr-only">{t('securityDescription')}</h1>
 
-            <div className="space-y-3">
-                <Heading
-                    variant="small"
-                    title={t('securityTitle')}
-                    description={t('securityDescription')}
-                />
-
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-4">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <KeyRound className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                {t('securityChangePassword')}
-                            </CardTitle>
-                            <CardDescription>
-                                {t('securityPasswordHelp')}
-                            </CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-4">
+            <div className="space-y-4">
+                <SettingsGroup label={t('securityChangePassword')}>
+                    <div className="space-y-3 p-4">
                         <Form
                             {...SecurityController.update.form()}
                             options={{
@@ -78,7 +52,7 @@ export default function Security(props: Props) {
                         >
                             {({ errors, processing }) => (
                                 <>
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="current_password">
                                             {t('securityCurrentPassword')}
                                         </Label>
@@ -87,7 +61,7 @@ export default function Security(props: Props) {
                                             id="current_password"
                                             ref={currentPasswordInput}
                                             name="current_password"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             autoComplete="current-password"
                                             placeholder={t(
                                                 'securityCurrentPassword',
@@ -99,7 +73,7 @@ export default function Security(props: Props) {
                                         />
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="password">
                                             {t('securityNewPassword')}
                                         </Label>
@@ -108,7 +82,7 @@ export default function Security(props: Props) {
                                             id="password"
                                             ref={passwordInput}
                                             name="password"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             autoComplete="new-password"
                                             placeholder={t(
                                                 'securityNewPassword',
@@ -119,7 +93,7 @@ export default function Security(props: Props) {
                                         <InputError message={errors.password} />
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="password_confirmation">
                                             {t('securityConfirmPassword')}
                                         </Label>
@@ -127,7 +101,7 @@ export default function Security(props: Props) {
                                         <PasswordInput
                                             id="password_confirmation"
                                             name="password_confirmation"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             autoComplete="new-password"
                                             placeholder={t(
                                                 'securityConfirmPasswordHelp',
@@ -152,7 +126,7 @@ export default function Security(props: Props) {
                                     <div className="flex items-center gap-3 pt-1">
                                         <Button
                                             disabled={processing}
-                                            className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                                            className="rounded-xl"
                                             data-test="update-password-button"
                                         >
                                             {t('securitySavePassword')}
@@ -161,8 +135,8 @@ export default function Security(props: Props) {
                                 </>
                             )}
                         </Form>
-                    </CardContent>
-                </Card>
+                    </div>
+                </SettingsGroup>
             </div>
         </>
     );

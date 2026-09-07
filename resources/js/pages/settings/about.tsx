@@ -5,14 +5,13 @@ import {
     Download,
     ExternalLink,
     Heart,
-    Info,
     ListOrdered,
     LoaderCircle,
     RefreshCw,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AppLogoIcon from '@/components/app-logo-icon';
-import SettingsSection from '@/components/settings-section';
+import { SettingsGroup } from '@/components/settings-list';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
@@ -86,16 +85,14 @@ export default function About() {
 
             <h1 className="sr-only">{t('aboutAppInfo')}</h1>
 
-            <div className="space-y-3">
-                <SettingsSection
-                    icon={Info}
-                    title={t('aboutAppInfo')}
-                    description={t('aboutDescription')}
-                >
-                    <div className="flex items-center gap-3">
-                        <AppLogoIcon className="size-14 rounded-2xl" />
+            <div className="space-y-4">
+                <SettingsGroup label={t('aboutAppInfo')}>
+                    <div className="flex items-center gap-3 px-4 py-4">
+                        <AppLogoIcon className="size-10 rounded-xl" />
                         <div className="min-w-0">
-                            <p className="text-lg font-semibold">{APP_NAME}</p>
+                            <p className="text-base font-semibold">
+                                {APP_NAME}
+                            </p>
                             <p className="text-sm text-muted-foreground">
                                 {t('aboutVersionLabel')} {appVersion}
                             </p>
@@ -104,16 +101,86 @@ export default function About() {
                             </p>
                         </div>
                     </div>
-                </SettingsSection>
+                </SettingsGroup>
 
-                <SettingsSection
-                    icon={Download}
-                    title={t('aboutUpdate')}
-                    footer={
-                        <>
+                <SettingsGroup label={t('aboutUpdate')}>
+                    <div className="space-y-3 p-4">
+                        {checking ? (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <LoaderCircle className="size-4 animate-spin" />
+                                {t('aboutCheckingUpdates')}
+                            </div>
+                        ) : update?.failed ? (
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <AlertCircle className="size-4 text-destructive" />
+                                    {t('aboutUpdateError')}
+                                </div>
+                                {update.errorMessage && (
+                                    <p className="text-xs text-muted-foreground">
+                                        Detail: {update.errorMessage}
+                                    </p>
+                                )}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="rounded-xl"
+                                    onClick={recheck}
+                                >
+                                    <RefreshCw className="size-4" />
+                                    {t('tryAgain')}
+                                </Button>
+                            </div>
+                        ) : update?.updateAvailable ? (
+                            <div className="space-y-3">
+                                <Badge variant="destructive">
+                                    {t('aboutUpdateAvailable')}
+                                </Badge>
+                                <p className="text-sm text-muted-foreground">
+                                    {t('aboutUpdateVersionHelp')
+                                        .replace(
+                                            '{latest}',
+                                            update.latestVersion ?? '',
+                                        )
+                                        .replace('{current}', appVersion)}
+                                </p>
+                                <Button
+                                    className="rounded-xl"
+                                    onClick={() =>
+                                        openExternal(
+                                            update.downloadUrl ??
+                                                update.releaseUrl ??
+                                                '',
+                                        )
+                                    }
+                                >
+                                    <Download className="size-4" />
+                                    {t('aboutUpdateButton')}
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                <Badge
+                                    variant="secondary"
+                                    className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
+                                >
+                                    <CheckCircle2 className="size-3.5" />
+                                    {t('aboutUpToDate')}
+                                </Badge>
+                                <p className="text-sm text-muted-foreground">
+                                    {t('aboutCurrentVersion').replace(
+                                        '{version}',
+                                        appVersion,
+                                    )}
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-3">
                             <Button
                                 variant="outline"
                                 size="sm"
+                                className="rounded-xl"
                                 onClick={recheck}
                                 disabled={checking}
                             >
@@ -128,124 +195,58 @@ export default function About() {
                                     )}
                                 </span>
                             )}
-                        </>
-                    }
-                >
-                    {checking ? (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <LoaderCircle className="size-4 animate-spin" />
-                            {t('aboutCheckingUpdates')}
                         </div>
-                    ) : update?.failed ? (
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <AlertCircle className="size-4 text-destructive" />
-                                {t('aboutUpdateError')}
-                            </div>
-                            {update.errorMessage && (
-                                <p className="text-xs text-muted-foreground">
-                                    Detail: {update.errorMessage}
+                    </div>
+                </SettingsGroup>
+
+                <SettingsGroup label={t('aboutChangelog')}>
+                    <div className="space-y-3 p-4">
+                        {update?.changelog ? (
+                            <>
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    {t('aboutVersionLabel')}{' '}
+                                    {update.latestVersion ?? appVersion}
                                 </p>
-                            )}
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={recheck}
-                            >
-                                <RefreshCw className="size-4" />
-                                {t('tryAgain')}
-                            </Button>
-                        </div>
-                    ) : update?.updateAvailable ? (
-                        <div className="space-y-3">
-                            <Badge variant="destructive">
-                                {t('aboutUpdateAvailable')}
-                            </Badge>
-                            <p className="text-sm text-muted-foreground">
-                                {t('aboutUpdateVersionHelp')
-                                    .replace(
-                                        '{latest}',
-                                        update.latestVersion ?? '',
-                                    )
-                                    .replace('{current}', appVersion)}
-                            </p>
-                            <Button
-                                onClick={() =>
-                                    openExternal(
-                                        update.downloadUrl ??
-                                            update.releaseUrl ??
-                                            '',
-                                    )
-                                }
-                            >
-                                <Download className="size-4" />
-                                {t('aboutUpdateButton')}
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            <Badge
-                                variant="secondary"
-                                className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
-                            >
-                                <CheckCircle2 className="size-3.5" />
-                                {t('aboutUpToDate')}
-                            </Badge>
-                            <p className="text-sm text-muted-foreground">
-                                {t('aboutCurrentVersion').replace(
-                                    '{version}',
-                                    appVersion,
+                                <p className="max-h-56 overflow-y-auto text-sm whitespace-pre-wrap">
+                                    {update.changelog}
+                                </p>
+                                {releaseUrl && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="rounded-xl"
+                                        onClick={() => openExternal(releaseUrl)}
+                                    >
+                                        <ExternalLink className="size-4" />
+                                        {t('aboutViewAllReleases')}
+                                    </Button>
                                 )}
-                            </p>
-                        </div>
-                    )}
-                </SettingsSection>
+                            </>
+                        ) : (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <ListOrdered className="size-4" />
+                                {update?.failed
+                                    ? t('aboutChangelogEmpty')
+                                    : t('aboutChangelogNone')}
+                            </div>
+                        )}
+                    </div>
+                </SettingsGroup>
 
-                <SettingsSection icon={ListOrdered} title={t('aboutChangelog')}>
-                    {update?.changelog ? (
-                        <div className="space-y-3">
-                            <p className="text-sm font-medium text-muted-foreground">
-                                {t('aboutVersionLabel')}{' '}
-                                {update.latestVersion ?? appVersion}
-                            </p>
-                            <p className="max-h-56 overflow-y-auto text-sm whitespace-pre-wrap">
-                                {update.changelog}
-                            </p>
-                            {releaseUrl && (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => openExternal(releaseUrl)}
-                                >
-                                    <ExternalLink className="size-4" />
-                                    {t('aboutViewAllReleases')}
-                                </Button>
-                            )}
-                        </div>
-                    ) : (
+                <SettingsGroup label={t('aboutSupportDeveloper')}>
+                    <div className="space-y-3 p-4">
                         <p className="text-sm text-muted-foreground">
-                            {update?.failed
-                                ? t('aboutChangelogEmpty')
-                                : t('aboutChangelogNone')}
+                            {t('aboutSupportHelp').replace('{app}', APP_NAME)}
                         </p>
-                    )}
-                </SettingsSection>
-
-                <SettingsSection
-                    icon={Heart}
-                    title={t('aboutSupportDeveloper')}
-                >
-                    <p className="text-sm text-muted-foreground">
-                        {t('aboutSupportHelp').replace('{app}', APP_NAME)}
-                    </p>
-                    <Button
-                        className="mt-3"
-                        onClick={() => openExternal(SUPPORT_URL)}
-                    >
-                        <Heart className="size-4" />
-                        {t('aboutSupportButton')}
-                    </Button>
-                </SettingsSection>
+                        <Button
+                            className="rounded-xl"
+                            onClick={() => openExternal(SUPPORT_URL)}
+                        >
+                            <Heart className="size-4" />
+                            {t('aboutSupportButton')}
+                        </Button>
+                    </div>
+                </SettingsGroup>
             </div>
         </>
     );

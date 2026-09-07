@@ -46,6 +46,8 @@ const translations = {
         en: 'Choose the language for the app',
         id: 'Pilih bahasa aplikasi',
     },
+    langIndonesian: { en: 'Bahasa Indonesia', id: 'Bahasa Indonesia' },
+    langEnglish: { en: 'English', id: 'English' },
 
     /* ── Common / shared ──────────────────────────────────────────────── */
     save: { en: 'Save', id: 'Simpan' },
@@ -80,6 +82,10 @@ const translations = {
     themeLight: { en: 'Light', id: 'Terang' },
     themeDark: { en: 'Dark', id: 'Gelap' },
     themeSystem: { en: 'System', id: 'Sistem' },
+    settingsThemeLabel: {
+        en: 'App theme',
+        id: 'Tema aplikasi',
+    },
 
     /* ── Pagination ───────────────────────────────────────────────────── */
     paginationPrev: { en: 'Previous', id: 'Sebelumnya' },
@@ -97,6 +103,8 @@ const translations = {
         id: 'Kelola profil, keamanan, dan preferensi akunmu',
     },
     settingsAccount: { en: 'Account Info', id: 'Informasi Akun' },
+    settingsSecurity: { en: 'Security', id: 'Keamanan' },
+    settingsNotifications: { en: 'Notifications', id: 'Notifikasi' },
     settingsAppearance: { en: 'Appearance & Sound', id: 'Tampilan & Suara' },
     settingsAbout: { en: 'About App', id: 'Tentang App' },
     settingsUpdateAvailable: {
@@ -136,6 +144,10 @@ const translations = {
         id: 'Tautan verifikasi baru telah dikirim.',
     },
     profileChangePassword: {
+        en: 'Change password',
+        id: 'Ubah password',
+    },
+    profilePasswordSection: {
         en: 'Change password',
         id: 'Ubah password',
     },

@@ -1,27 +1,13 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
-import {
-    KeyRound,
-    LogOut,
-    Mail,
-    ShieldCheck,
-    ShieldAlert,
-    User,
-} from 'lucide-react';
+import { KeyRound, LogOut, Mail, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { useRef } from 'react';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
 import DeleteUser from '@/components/delete-user';
-import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
+import { SettingsGroup } from '@/components/settings-list';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useI18n } from '@/lib/i18n';
@@ -54,28 +40,9 @@ export default function Profile({
 
             <h1 className="sr-only">{t('profileDescription')}</h1>
 
-            <div className="space-y-3">
-                <Heading
-                    variant="small"
-                    title={t('profileTitle')}
-                    description={t('profileDescription')}
-                />
-
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <User className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                {t('profileNameLabel')}
-                            </CardTitle>
-                            <CardDescription>
-                                {t('profileNameHelp')}
-                            </CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-4 py-3">
+            <div className="space-y-4">
+                <SettingsGroup label={t('profileTitle')}>
+                    <div className="space-y-3 p-4">
                         <Form
                             {...ProfileController.update.form()}
                             options={{
@@ -85,13 +52,13 @@ export default function Profile({
                         >
                             {({ processing, errors }) => (
                                 <>
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="name">
                                             {t('profileNameLabel')}
                                         </Label>
                                         <Input
                                             id="name"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             defaultValue={auth.user.name}
                                             name="name"
                                             required
@@ -101,14 +68,14 @@ export default function Profile({
                                             )}
                                         />
                                         <InputError
-                                            className="mt-2"
+                                            className="mt-0.5"
                                             message={errors.name}
                                         />
                                     </div>
 
                                     <Button
                                         disabled={processing}
-                                        className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                                        className="rounded-xl"
                                         data-test="update-profile-button"
                                     >
                                         {t('save')}
@@ -116,26 +83,16 @@ export default function Profile({
                                 </>
                             )}
                         </Form>
-                    </CardContent>
-                </Card>
+                    </div>
+                </SettingsGroup>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Mail className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                {t('profileEmailLabel')}
-                            </CardTitle>
-                            <CardDescription>
-                                {t('profileEmailHelp')}
-                            </CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 px-4 py-3">
+                <SettingsGroup label={t('profileEmailLabel')}>
+                    <div className="space-y-3 p-4">
                         <div className="flex flex-wrap items-center gap-2">
-                            <p className="text-sm font-medium">
+                            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                                <Mail className="size-4" />
+                            </span>
+                            <p className="min-w-0 flex-1 truncate text-sm font-medium">
                                 {auth.user.email}
                             </p>
                             <span
@@ -166,7 +123,7 @@ export default function Profile({
                                     asChild
                                     variant="outline"
                                     size="sm"
-                                    className="mt-2"
+                                    className="mt-2 rounded-xl"
                                 >
                                     <Link
                                         href={send()}
@@ -184,24 +141,16 @@ export default function Profile({
                                 )}
                             </div>
                         )}
-                    </CardContent>
-                </Card>
+                    </div>
+                </SettingsGroup>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <KeyRound className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                {t('profileChangePassword')}
-                            </CardTitle>
-                            <CardDescription>
-                                {t('profilePasswordHelp')}
-                            </CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-4 py-3">
+                <SettingsGroup label={t('profilePasswordSection')}>
+                    <div className="space-y-3 p-4">
+                        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <KeyRound className="size-4 shrink-0 text-primary" />
+                            {t('profilePasswordHelp')}
+                        </p>
+
                         <Form
                             {...SecurityController.update.form()}
                             options={{
@@ -226,7 +175,7 @@ export default function Profile({
                         >
                             {({ errors, processing }) => (
                                 <>
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="current_password">
                                             {t('profileCurrentPassword')}
                                         </Label>
@@ -235,7 +184,7 @@ export default function Profile({
                                             id="current_password"
                                             ref={currentPasswordInput}
                                             name="current_password"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             autoComplete="current-password"
                                             placeholder={t(
                                                 'profileCurrentPassword',
@@ -247,7 +196,7 @@ export default function Profile({
                                         />
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="password">
                                             {t('profileNewPassword')}
                                         </Label>
@@ -256,7 +205,7 @@ export default function Profile({
                                             id="password"
                                             ref={passwordInput}
                                             name="password"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             autoComplete="new-password"
                                             placeholder={t(
                                                 'profileNewPassword',
@@ -266,7 +215,7 @@ export default function Profile({
                                         <InputError message={errors.password} />
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1.5">
                                         <Label htmlFor="password_confirmation">
                                             {t('profileConfirmPassword')}
                                         </Label>
@@ -274,7 +223,7 @@ export default function Profile({
                                         <PasswordInput
                                             id="password_confirmation"
                                             name="password_confirmation"
-                                            className="mt-1 block w-full rounded-xl"
+                                            className="rounded-xl"
                                             autoComplete="new-password"
                                             placeholder={t(
                                                 'profileConfirmPasswordHelp',
@@ -290,7 +239,7 @@ export default function Profile({
 
                                     <Button
                                         disabled={processing}
-                                        className="rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                                        className="rounded-xl"
                                         data-test="update-password-button"
                                     >
                                         {t('profileSavePassword')}
@@ -298,28 +247,18 @@ export default function Profile({
                                 </>
                             )}
                         </Form>
-                    </CardContent>
-                </Card>
+                    </div>
+                </SettingsGroup>
 
-                <Card className="overflow-hidden rounded-2xl">
-                    <CardHeader className="flex flex-row items-center gap-3 space-y-0 border-b px-4 py-3">
-                        <span className="flex size-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-                            <LogOut className="size-4" />
-                        </span>
-                        <div>
-                            <CardTitle className="text-base">
-                                {t('profileAccountSection')}
-                            </CardTitle>
-                            <CardDescription>
-                                {t('profileAccountHelp')}
-                            </CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="grid gap-3 px-4 py-3 sm:grid-cols-2">
+                <SettingsGroup label={t('profileAccountSection')}>
+                    <div className="flex items-center gap-3 px-4 py-3 text-sm text-muted-foreground">
+                        {t('profileAccountHelp')}
+                    </div>
+                    <div className="p-4">
                         <Button
                             asChild
                             variant="secondary"
-                            className="rounded-xl"
+                            className="w-full rounded-xl"
                         >
                             <Link
                                 href={logout()}
@@ -330,9 +269,11 @@ export default function Profile({
                                 {t('profileSignOut')}
                             </Link>
                         </Button>
+                    </div>
+                    <div className="p-4 pt-0">
                         <DeleteUser compact />
-                    </CardContent>
-                </Card>
+                    </div>
+                </SettingsGroup>
             </div>
         </>
     );

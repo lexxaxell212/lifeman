@@ -20,7 +20,7 @@ export function NavBar({
     const { t } = useI18n();
 
     return (
-        <nav className="fixed inset-x-0 bottom-0 z-[70] border-t border-border/60 bg-background">
+        <nav className="fixed inset-x-0 bottom-0 z-[90] border-t border-border/60 bg-background">
             <div className="mx-auto flex h-16 w-full max-w-5xl items-center gap-3 px-3 md:px-4">
                 <Button
                     variant="ghost"
